@@ -1,0 +1,2255 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mediawijsheid - Reflectiedashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&amp;display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #f8f7f3;
+        --panel: #ffffff;
+        --ink: #111111;
+        --ink-soft: #555555;
+        --line: #d9d4f5;
+        --brand: #5200ff;
+        --brand-soft: #efe9ff;
+        --accent: #c47a00;
+        --accent-soft: #fff9ec;
+        --radius: 16px;
+        --radius-sm: 12px;
+        --shadow: 0 10px 26px rgba(25, 8, 82, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 8%, #ffffff 0%, rgba(255, 255, 255, 0) 42%),
+          linear-gradient(140deg, #f5f3ff 0%, #f8f7f3 52%, #edfafd 100%);
+        min-height: 100vh;
+      }
+
+      .wrap {
+        width: min(960px, 94vw);
+        margin: 24px auto 48px;
+      }
+
+      .hero {
+        background: linear-gradient(120deg, #5200ff 0%, #3926b8 58%, #03ddef 100%);
+        color: #f4f5ff;
+        border-radius: var(--radius);
+        padding: 24px;
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-size: clamp(1.4rem, 3.6vw, 2rem);
+        font-weight: 700;
+      }
+
+      .hero p {
+        margin: 8px 0 0;
+        color: #e3e5ff;
+      }
+
+      .stack {
+        display: grid;
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 20px;
+      }
+
+      .panel h2 {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      .intro-line {
+        margin: 8px 0 0;
+        color: var(--ink-soft);
+      }
+
+      .progress-line {
+        margin-top: 14px;
+      }
+
+      .progress-text {
+        margin: 0;
+        color: #35514e;
+        font-size: 0.92rem;
+        font-weight: 500;
+      }
+
+      .bar {
+        margin-top: 8px;
+        height: 9px;
+        border-radius: 999px;
+        background: #e4ece9;
+        overflow: hidden;
+      }
+
+      .bar > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #5200ff 0%, #03ddef 100%);
+        transition: width 240ms ease;
+      }
+
+      .question-card {
+        margin-top: 16px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+        background: #fbfdfc;
+      }
+
+      .question-top {
+        display: flex;
+        align-items: start;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      #question-title {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .help-btn {
+        border: 1px solid #b9ccc6;
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        background: #f1f7f5;
+        color: #10564f;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .help-btn:hover,
+      .help-btn:focus-visible {
+        outline: none;
+        border-color: #8eb2aa;
+        background: #e2f1ed;
+      }
+
+      .help-box {
+        margin-top: 10px;
+        padding: 10px;
+        border: 1px solid #bfd5cf;
+        border-radius: 10px;
+        background: #f6feff;
+        color: #26403d;
+        font-size: 0.95rem;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .global-menu-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1300;
+        width: 44px;
+        height: 44px;
+        border: 1px solid #cec7f4;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #341098;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(25, 8, 82, 0.14);
+      }
+
+      .global-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1290;
+        background: rgba(16, 12, 38, 0.36);
+      }
+
+      .global-menu-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1310;
+        width: min(320px, 86vw);
+        height: 100vh;
+        background: #fff;
+        border-right: 1px solid #ddd6fb;
+        box-shadow: 0 18px 36px rgba(24, 11, 63, 0.22);
+        padding: 14px;
+        transform: translateX(-105%);
+        transition: transform 180ms ease;
+      }
+
+      .global-menu-drawer.open {
+        transform: translateX(0);
+      }
+
+      .global-menu-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .global-menu-head h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: #28196d;
+      }
+
+      .global-menu-close {
+        border: 1px solid #d7cff7;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        border-radius: 10px;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+      }
+
+      .global-menu-links {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .global-menu-links a {
+        text-decoration: none;
+        color: #2f2c4c;
+        font-weight: 600;
+        border: 1px solid #ddd7f8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: #fcfbff;
+      }
+
+      .global-menu-links a.active {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .options {
+        margin-top: 14px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .option-btn {
+        border: 1px solid #bdd0ca;
+        border-radius: 999px;
+        padding: 11px 14px;
+        text-align: left;
+        background: #f8fbfa;
+        color: #28413e;
+        font: inherit;
+        font-weight: 500;
+        cursor: pointer;
+        transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+      }
+
+      .option-btn:hover {
+        border-color: #2e867c;
+        transform: translateY(-1px);
+      }
+
+      .option-btn.selected {
+        border-color: #5200ff;
+        background: var(--brand-soft);
+        color: #0c4540;
+        font-weight: 700;
+      }
+
+      .time-picker {
+        margin-top: 10px;
+        border: 1px solid #c8d8d3;
+        border-radius: 12px;
+        padding: 12px;
+        background: #f8fcfa;
+      }
+
+      .time-radial-wrap {
+        position: relative;
+        width: 196px;
+        height: 196px;
+        margin: 2px auto 0;
+      }
+
+      .time-radial {
+        width: 196px;
+        height: 196px;
+        display: block;
+      }
+
+      .time-radial-track {
+        fill: none;
+        stroke: #dfeae6;
+        stroke-width: 12;
+      }
+
+      .time-radial-progress {
+        fill: none;
+        stroke: url(#timeRingGradient);
+        stroke-width: 12;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        stroke-dasharray: 326.73;
+        stroke-dashoffset: 326.73;
+        transition: stroke-dashoffset 220ms ease;
+      }
+
+      .time-radial-knob {
+        fill: #ffffff;
+        stroke: #10635b;
+        stroke-width: 3;
+      }
+
+      .time-radial-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        text-align: center;
+      }
+
+      .time-value-main {
+        margin: 0;
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: #16413b;
+        line-height: 1.05;
+      }
+
+      .time-value-sub {
+        margin: 4px 0 0;
+        color: #58726d;
+        font-size: 0.86rem;
+      }
+
+      .time-range {
+        width: 100%;
+        margin-top: 14px;
+        accent-color: #5200ff;
+      }
+
+      .time-range-ends {
+        margin-top: 4px;
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.82rem;
+        color: #607875;
+      }
+
+      .time-input-row {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .time-input-box {
+        border: 1px solid #c8d7d2;
+        border-radius: 10px;
+        padding: 8px;
+        background: #ffffff;
+      }
+
+      .time-input-box label {
+        display: block;
+        font-size: 0.82rem;
+        color: #5b7571;
+        font-weight: 600;
+      }
+
+      .time-input-box input {
+        width: 100%;
+        margin-top: 4px;
+        border: 1px solid #c6d5d0;
+        border-radius: 8px;
+        padding: 7px 8px;
+        font: inherit;
+        font-weight: 600;
+        color: #203936;
+        background: #fbfdfc;
+      }
+
+      .actions {
+        margin-top: 16px;
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .btn {
+        border: 0;
+        border-radius: 10px;
+        font: inherit;
+        font-weight: 700;
+        padding: 10px 14px;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--brand);
+        color: #fff;
+      }
+
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .btn-ghost {
+        border: 1px solid #c4d5d0;
+        background: #f3f8f6;
+        color: #2a4744;
+      }
+
+      .card-progress {
+        margin-top: 10px;
+        color: var(--ink-soft);
+        font-size: 0.94rem;
+        font-weight: 500;
+      }
+
+      .focus-card {
+        margin-top: 12px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        background: #fbfdfc;
+      }
+
+      .focus-card h3 {
+        margin: 0 0 10px;
+        font-size: 1.08rem;
+      }
+
+      .focus-layout {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 12px;
+      }
+
+      .focus-block {
+        border: 1px solid #dbe6e2;
+        border-radius: 10px;
+        padding: 10px;
+        background: #ffffff;
+      }
+
+      .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #58726e;
+        font-weight: 700;
+      }
+
+      .my-answer,
+      .prompt,
+      .meaning,
+      .digimeter-stat {
+        margin: 6px 0 0;
+      }
+
+      .my-answer {
+        color: #203734;
+        font-weight: 500;
+      }
+
+      .prompt {
+        color: #35524e;
+      }
+
+      .badge-row {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .badge-btn {
+        border: 1px solid #bfd2cc;
+        border-radius: 999px;
+        background: #f8fcfa;
+        color: #365551;
+        font: inherit;
+        padding: 6px 10px;
+        cursor: pointer;
+      }
+
+      .badge-btn.selected {
+        border-color: #10625a;
+        background: #ddf1ea;
+        color: #0b4d47;
+        font-weight: 700;
+      }
+
+      .radial-wrap {
+        position: relative;
+        width: 172px;
+        height: 172px;
+        margin: 2px auto 8px;
+      }
+
+      .radial {
+        width: 172px;
+        height: 172px;
+        display: block;
+      }
+
+      .radial-track {
+        fill: none;
+        stroke: #e1ebe7;
+        stroke-width: 12;
+      }
+
+      .radial-progress {
+        fill: none;
+        stroke: url(#ringGradient);
+        stroke-width: 12;
+        stroke-linecap: round;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+        stroke-dasharray: 326.73;
+        stroke-dashoffset: 326.73;
+        transition: stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .radial-center {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-content: center;
+        text-align: center;
+        pointer-events: none;
+      }
+
+      .radial-value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #124742;
+        line-height: 1;
+      }
+
+      .radial-note {
+        margin-top: 4px;
+        font-size: 0.8rem;
+        color: #5f7773;
+      }
+
+      .digimeter-stat {
+        color: #163f39;
+        font-weight: 700;
+      }
+
+      .meaning {
+        color: #4d605d;
+      }
+
+      .summary {
+        margin-top: 14px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        background: #fbfdfb;
+      }
+
+      .summary h3 {
+        margin: 0;
+        font-size: 1.02rem;
+      }
+
+      .summary-grid {
+        margin-top: 8px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .summary-grid label {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #36504d;
+      }
+
+      .summary-grid input {
+        width: 100%;
+        border: 1px solid #c7d6d1;
+        border-radius: 8px;
+        padding: 9px 10px;
+        font: inherit;
+      }
+
+      .next-lesson {
+        margin-top: 10px;
+        border: 1px solid #efcdb4;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: #6a411f;
+        padding: 10px;
+      }
+
+      .next-lesson h4 {
+        margin: 0;
+        font-size: 0.97rem;
+      }
+
+      .next-lesson ul {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      .guide-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .guide-block {
+        border: 1px solid #d5e2de;
+        border-radius: 12px;
+        background: #fbfdfc;
+        padding: 12px;
+      }
+
+      .guide-block h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: #244441;
+      }
+
+      .guide-list {
+        margin: 10px 0 0;
+        padding-left: 18px;
+        color: #304a47;
+      }
+
+      .guide-list li + li {
+        margin-top: 6px;
+      }
+
+      .glossary {
+        margin-top: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .glossary-item {
+        border: 1px solid #d3e1dc;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: #ffffff;
+      }
+
+      .glossary-item dt {
+        margin: 0;
+        font-weight: 700;
+        color: #214441;
+      }
+
+      .glossary-item dd {
+        margin: 4px 0 0;
+        color: #455f5b;
+      }
+
+      .guide-next-step {
+        margin-top: 10px;
+        border: 1px solid #efcdb4;
+        border-radius: 10px;
+        background: var(--accent-soft);
+        color: #6a411f;
+        padding: 10px;
+      }
+
+      .summary-actions {
+        margin-top: 12px;
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 2000;
+      }
+
+      .modal.hidden {
+        display: none;
+      }
+
+      .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(13, 38, 35, 0.55);
+      }
+
+      .modal-card {
+        position: relative;
+        width: min(92vw, 460px);
+        background: #ffffff;
+        border: 1px solid #c9d8d3;
+        border-radius: 14px;
+        box-shadow: 0 20px 45px rgba(8, 28, 24, 0.3);
+        padding: 16px;
+      }
+
+      .modal-card h3 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .modal-card p {
+        margin: 8px 0 0;
+        color: #4f6662;
+      }
+
+      .modal-form {
+        margin-top: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .modal-form label {
+        font-size: 0.92rem;
+        font-weight: 700;
+        color: #2f4a47;
+      }
+
+      .modal-form input {
+        width: 100%;
+        margin-top: 4px;
+        border: 1px solid #c5d5d0;
+        border-radius: 8px;
+        padding: 9px 10px;
+        font: inherit;
+      }
+
+      .modal-error {
+        margin: 2px 0 0;
+        min-height: 18px;
+        font-size: 0.88rem;
+        color: #af2d2d;
+      }
+
+      .modal-actions {
+        margin-top: 10px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      /* Harmonisatie met leesopdracht-stijl */
+      .progress-text {
+        color: #4b4678;
+      }
+
+      .bar {
+        background: #ece8ff;
+      }
+
+      .bar > span {
+        background: linear-gradient(90deg, #5200ff 0%, #03ddef 100%);
+      }
+
+      .question-card,
+      .focus-card,
+      .summary,
+      .guide-block,
+      .glossary-item {
+        border-color: #ddd8f8;
+        background: #ffffff;
+      }
+
+      .help-btn {
+        border: 1px solid #cec7f4;
+        background: #f5f2ff;
+        color: #3f0ec9;
+      }
+
+      .help-btn:hover,
+      .help-btn:focus-visible {
+        border-color: #b8aaf0;
+        background: #ece5ff;
+      }
+
+      .help-box {
+        border: 1px solid #d7cff7;
+        border-left: 4px solid #03ddef;
+        background: #f6feff;
+        color: #25333b;
+      }
+
+      .option-btn {
+        border: 1px solid #ddd7f8;
+        background: #fcfbff;
+        color: #2f2f2f;
+      }
+
+      .option-btn:hover {
+        border-color: #a491ea;
+      }
+
+      .option-btn.selected {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .time-picker,
+      .time-input-box {
+        border-color: #ddd7f8;
+        background: #fcfbff;
+      }
+
+      .time-radial-track,
+      .radial-track {
+        stroke: #e7e2fb;
+      }
+
+      .time-radial-knob {
+        stroke: #4d2ee0;
+      }
+
+      .time-value-main,
+      .radial-value,
+      .digimeter-stat {
+        color: #2a0d77;
+      }
+
+      .time-value-sub,
+      .time-range-ends,
+      .radial-note,
+      .label {
+        color: #5f5a82;
+      }
+
+      .time-range {
+        accent-color: #5200ff;
+      }
+
+      .time-input-box input,
+      .summary-grid input,
+      .modal-form input {
+        border: 1px solid #d8d1f7;
+        background: #ffffff;
+      }
+
+      .btn-primary:hover {
+        background: #4500d7;
+      }
+
+      .btn-ghost {
+        border: 1px solid #d1caf5;
+        background: #ffffff;
+        color: #312c58;
+      }
+
+      .badge-btn {
+        border: 1px solid #ddd7f8;
+        background: #fcfbff;
+        color: #2f2f2f;
+      }
+
+      .badge-btn.selected {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .prompt,
+      .meaning,
+      .guide-list,
+      .glossary-item dd,
+      .my-answer,
+      .summary-grid label,
+      .modal-card p,
+      .modal-form label {
+        color: #555555;
+      }
+
+      .guide-block h3,
+      .glossary-item dt,
+      .focus-card h3 {
+        color: #2a1e63;
+      }
+
+      .next-lesson,
+      .guide-next-step {
+        border: 1px solid #eed8a7;
+        background: #fff9ec;
+        color: #7e5a10;
+      }
+
+      .modal-backdrop {
+        background: rgba(20, 8, 60, 0.54);
+      }
+
+      .modal-card {
+        border: 1px solid #d2cbf6;
+        box-shadow: 0 22px 46px rgba(15, 8, 42, 0.25);
+      }
+
+      @media (max-width: 860px) {
+        .focus-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .radial-wrap {
+          margin-top: 6px;
+        }
+
+        .guide-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .wrap {
+          width: min(96vw, 760px);
+          margin-top: 14px;
+        }
+
+        .hero,
+        .panel {
+          padding: 14px;
+          border-radius: 14px;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="globalMenuBtn" class="global-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <div id="globalMenuBackdrop" class="global-menu-backdrop hidden"></div>
+    <nav id="globalMenuDrawer" class="global-menu-drawer hidden" aria-label="Projectmenu">
+      <div class="global-menu-head">
+        <h2>Mijn schermen en ik</h2>
+        <button id="globalMenuCloseBtn" class="global-menu-close" type="button" aria-label="Sluit menu">✕</button>
+      </div>
+      <div class="global-menu-links">
+        <a href="../index.html">Startpagina</a>
+        <a class="active" href="imec.html">imec reflectiedashboard</a>
+        <a href="../mijn_schermen_en_ik_video_prevragen/index.html">Video-opdracht</a>
+        <a href="../mijn_schermen_en_ik_vrt_leesopdracht/index.html">Leesopdracht</a>
+        <a href="../posteropdracht_schermtijd_acties/index.html">Posteropdracht</a>
+      </div>
+    </nav>
+    <main class="wrap">
+      <header class="hero">
+        <h1>Mediawijsheid: Reflectiedashboard</h1>
+        <p>Vul rustig in. We tonen telkens één vraag en daarna één kaart per keer.</p>
+      </header>
+
+      <div class="stack">
+        <section class="panel" id="reflection-panel">
+          <h2>Welke regels en prikkels spelen mee?</h2>
+
+          <div class="progress-line">
+            <p id="question-progress" class="progress-text"></p>
+            <div class="bar"><span id="question-progress-fill"></span></div>
+          </div>
+
+          <div class="question-card" id="question-card">
+            <div class="question-top">
+              <h3 id="question-title"></h3>
+              <button type="button" id="question-help-btn" class="help-btn hidden" aria-label="Toelichting">?</button>
+            </div>
+            <p id="question-help" class="help-box hidden"></p>
+            <div id="options" class="options"></div>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="prev-question-btn" class="btn btn-ghost">Vorige</button>
+            <button type="button" id="next-question-btn" class="btn btn-primary">Volgende</button>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="dashboard-panel">
+          <h2>Mijn profiel en de bredere context</h2>
+          <p id="card-progress" class="card-progress"></p>
+
+          <article class="focus-card" id="focus-card">
+            <h3 id="card-title"></h3>
+            <div class="focus-layout">
+              <div class="focus-block">
+                <div class="label">Mijn antwoord</div>
+                <p id="my-answer" class="my-answer"></p>
+                <div class="label" style="margin-top: 10px">Mijn reflectie</div>
+                <p id="card-question" class="prompt"></p>
+                <div class="badge-row" id="badge-row"></div>
+              </div>
+
+              <div class="focus-block">
+                <div class="label">Digimeter-context (imec)</div>
+                <div class="radial-wrap">
+                  <svg class="radial" viewBox="0 0 120 120" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="ringGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#5200ff"></stop>
+                        <stop offset="100%" stop-color="#03ddef"></stop>
+                      </linearGradient>
+                    </defs>
+                    <circle class="radial-track" cx="60" cy="60" r="52"></circle>
+                    <circle class="radial-progress" id="radial-progress" cx="60" cy="60" r="52"></circle>
+                  </svg>
+                  <div class="radial-center">
+                    <span class="radial-value" id="radial-value">0%</span>
+                    <span class="radial-note" id="radial-note"></span>
+                  </div>
+                </div>
+                <p id="digimeter-stat" class="digimeter-stat"></p>
+                <p id="digimeter-meaning" class="meaning"></p>
+              </div>
+            </div>
+          </article>
+
+          <div class="actions">
+            <button type="button" id="prev-card-btn" class="btn btn-ghost">Vorige kaart</button>
+            <button type="button" id="next-card-btn" class="btn btn-primary">Volgende kaart</button>
+          </div>
+
+          <div class="summary hidden" id="slot-summary">
+            <h3>Slotreflectie</h3>
+            <div class="summary-grid">
+              <label for="compare_recognition">Eén vergelijking die ik herken</label>
+              <input
+                id="compare_recognition"
+                name="compare_recognition"
+                type="text"
+                maxlength="140"
+                placeholder="Bijv. Ik herken dat ik vaak snel tussendoor check."
+              />
+
+              <label for="compare_difference">Eén verschil dat mij opvalt</label>
+              <input
+                id="compare_difference"
+                name="compare_difference"
+                type="text"
+                maxlength="140"
+                placeholder="Bijv. Mijn slaap lijkt minder verstoord dan ik dacht."
+              />
+
+              <label for="compare_question">Eén vraag voor de volgende les</label>
+              <input
+                id="compare_question"
+                name="compare_question"
+                type="text"
+                maxlength="140"
+                placeholder="Bijv. Welke kleine gewoonte kan ik eerst proberen?"
+              />
+
+              <label for="risky_habit">Eén gewoonte die ik later wil aanpakken</label>
+              <input
+                id="risky_habit"
+                name="risky_habit"
+                type="text"
+                maxlength="140"
+                placeholder="Bijv. Minder korte filmpjes voor het slapengaan."
+              />
+            </div>
+
+            <div class="next-lesson">
+              <h4>Mee naar de volgende les</h4>
+              <ul id="carry-forward-list">
+                <li>Vul je slotreflectie in om dit blok te vullen.</li>
+              </ul>
+            </div>
+
+            <div class="summary-actions">
+              <button type="button" id="save-png-btn" class="btn btn-primary">Opslaan als PNG</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel hidden" id="learning-guide-panel">
+          <h2>Leerwijzer: wat hebben we geleerd?</h2>
+          <p id="guide-student-meta" class="intro-line"></p>
+
+          <div class="guide-grid">
+            <article class="guide-block">
+              <h3>Leerdoelen</h3>
+              <ul id="guide-goals-list" class="guide-list"></ul>
+            </article>
+
+            <article class="guide-block">
+              <h3>Moeilijke woorden uitgelegd</h3>
+              <dl id="guide-glossary" class="glossary"></dl>
+            </article>
+
+            <article class="guide-block">
+              <h3>Jouw kerninzichten</h3>
+              <ul id="guide-insights-list" class="guide-list"></ul>
+            </article>
+
+            <article class="guide-block">
+              <h3>Volgende stap</h3>
+              <p id="guide-next-step" class="guide-next-step"></p>
+            </article>
+          </div>
+
+          <div class="actions">
+            <button type="button" id="guide-download-btn" class="btn btn-primary">Download leerwijzer als PNG</button>
+            <button type="button" id="guide-back-btn" class="btn btn-ghost">Terug naar dashboard</button>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <div class="modal hidden" id="export-modal" aria-hidden="true">
+      <div class="modal-backdrop" id="export-modal-backdrop"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+        <h3 id="export-modal-title">Bewaren als PNG</h3>
+        <p>Vul je naam en klas in. Daarna maken we je reflectiekaart als afbeelding.</p>
+        <div class="modal-form">
+          <label for="export-student-name">
+            Naam
+            <input id="export-student-name" type="text" placeholder="Voornaam Naam" />
+          </label>
+          <label for="export-student-class">
+            Klas
+            <input id="export-student-class" type="text" placeholder="Bijv. 1A" />
+          </label>
+        </div>
+        <p id="export-error" class="modal-error"></p>
+        <div class="modal-actions">
+          <button type="button" id="export-cancel-btn" class="btn btn-ghost">Annuleren</button>
+          <button type="button" id="export-confirm-btn" class="btn btn-primary">Download PNG</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const likertFrequency = [
+        { value: "nooit", label: "nooit" },
+        { value: "zelden", label: "zelden" },
+        { value: "soms", label: "soms" },
+        { value: "vaak", label: "vaak" },
+        { value: "altijd", label: "altijd" }
+      ];
+
+      const reflectionQuestions = [
+        {
+          key: "rules_present",
+          shortLabel: "Regels",
+          question: "Hoe vaak gebruik ik schermtijdslot of ouderlijk toezicht?",
+          help: "Schermtijdslot of ouderlijk toezicht betekent een limiet of blokkering op je toestel, vaak ingesteld door jezelf of een ouder.",
+          options: likertFrequency
+        },
+        {
+          key: "notifications_on",
+          shortLabel: "Meldingen",
+          question: "Hoe vaak staan meldingen aan tijdens focusmomenten?",
+          help: "Focusmomenten zijn momenten waarop je wil opletten of doorwerken, zoals in de les of tijdens huiswerk.",
+          options: likertFrequency
+        },
+        {
+          key: "focus_tools_used",
+          shortLabel: "Focusstand",
+          question: "Hoe vaak gebruik ik niet storen of focusstand?",
+          help: "Focusstand of niet storen zet meldingen tijdelijk stiller zodat je minder onderbrekingen krijgt.",
+          options: likertFrequency
+        },
+        {
+          key: "app_limits_used",
+          shortLabel: "App-limieten",
+          question: "Hoe vaak gebruik ik app-limieten of downtime?",
+          help: "Downtime is een ingestelde rustperiode waarin bepaalde apps tijdelijk niet beschikbaar zijn.",
+          options: likertFrequency
+        },
+        {
+          key: "main_distraction",
+          shortLabel: "Grootste afleiding",
+          question: "Wat stoort mij het meest?",
+          help: "Kies de afleiding die jou het vaakst uit je concentratie haalt.",
+          options: [
+            { value: "meldingen", label: "meldingen" },
+            { value: "chatberichten", label: "chatberichten" },
+            { value: "korte filmpjes", label: "korte filmpjes" },
+            { value: "games", label: "games" },
+            { value: "gewoonte om te checken", label: "gewoonte om te checken" },
+            { value: "ik neem mijn gsm zonder na te denken", label: "ik neem mijn gsm zonder na te denken" },
+            { value: "verveling", label: "verveling" },
+            { value: "anders", label: "anders" }
+          ]
+        },
+        {
+          key: "self_feel_too_much_time",
+          shortLabel: "Te veel tijd",
+          question: "Ik heb het gevoel dat ik te veel tijd op mijn smartphone doorbreng.",
+          help: "We vragen dit omdat veel mensen zelf aanvoelen wanneer hun gebruik te groot wordt.",
+          options: likertFrequency
+        },
+        {
+          key: "self_hard_to_put_away",
+          shortLabel: "Wegleggen",
+          question: "Ik vind het moeilijk om mijn smartphone weg te leggen.",
+          help: "Dit helpt ons nadenken over controle en gewoonte.",
+          options: likertFrequency
+        },
+        {
+          key: "self_social_time_loss",
+          shortLabel: "Tijdverlies",
+          question: "Ik heb het gevoel dat ik tijd verlies op sociale media.",
+          help: "Dit koppelt jouw ervaring aan hoe mensen hun schermtijd beleven.",
+          options: likertFrequency
+        },
+        {
+          key: "self_sleep_impact",
+          shortLabel: "Slaap",
+          question: "Mijn smartphone of schermen verstoren mijn slaap.",
+          help: "Schermen spelen soms een rol bij rust en slaap.",
+          options: likertFrequency
+        },
+        {
+          key: "self_focus_impact",
+          shortLabel: "Focus",
+          question: "Mijn smartphone of schermen verstoren mijn focus of schoolwerk.",
+          help: "Deze vraag helpt ons kijken naar afleiding en concentratie.",
+          options: likertFrequency
+        },
+        {
+          key: "rules_help_effect",
+          shortLabel: "Effect regels",
+          question: "Regels, app-limieten of focusinstellingen helpen mij echt.",
+          help: "Niet elke maatregel werkt even goed. Daarom vragen we ook naar effect.",
+          options: [
+            { value: "helemaal_niet", label: "helemaal niet" },
+            { value: "eerder_niet", label: "eerder niet" },
+            { value: "neutraal", label: "neutraal" },
+            { value: "eerder_wel", label: "eerder wel" },
+            { value: "helemaal_wel", label: "helemaal wel" }
+          ]
+        },
+        {
+          key: "screen_time_expectation",
+          shortLabel: "Schermtijd vs context",
+          question: "Mijn schermtijd is volgens mij ... vergeleken met het gemiddelde.",
+          help: "Hier vergelijk je je gevoel met het brede gemiddelde uit het onderzoek.",
+          options: [
+            { value: "veel_lager", label: "veel lager" },
+            { value: "lager", label: "lager" },
+            { value: "gelijkaardig", label: "gelijkaardig" },
+            { value: "hoger", label: "hoger" },
+            { value: "veel_hoger", label: "veel hoger" }
+          ]
+        },
+        {
+          key: "screen_time_checked",
+          shortLabel: "Schermtijd gecheckt",
+          question: "Hoe vaak check ik mijn echte schermtijd?",
+          help: "Je echte schermtijd vind je meestal in instellingen bij schermtijd, digitaal welzijn of gebruik.",
+          options: likertFrequency
+        },
+        {
+          key: "screen_time_avg_week_minutes",
+          shortLabel: "Gemiddelde schermtijd",
+          type: "radial_time",
+          question: "Als je je schermtijd van de voorbije week bekijkt: wat is je gemiddelde per dag?",
+          help: "Gebruik de radiale schuiver of de velden uren en minuten. Maximum is 24 uur per dag.",
+          min: 0,
+          max: 1440,
+          step: 5
+        }
+      ];
+
+      const digimeterCards = [
+        {
+          key: "screen_time",
+          title: "Schermtijd",
+          digimeter_stat: "183 minuten smartphonegebruik per dag (gemiddeld).",
+          meaning: "Smartphonegebruik neemt bij veel mensen elke dag veel tijd in.",
+          compare_prompt: "Past jouw verwachting hierbij?",
+          compare_with: ["screen_time_avg_week_minutes", "screen_time_expectation", "screen_time_checked"],
+          radialPercent: 76,
+          radialLabel: "183 min",
+          radialNote: "schaal op 240 min"
+        },
+        {
+          key: "too_much_time",
+          title: "Te veel tijd?",
+          digimeter_stat: "42% vindt van zichzelf dat ze te veel tijd op hun smartphone spenderen.",
+          meaning: "Veel mensen voelen zelf dat hun gebruik soms te groot wordt.",
+          compare_prompt: "Herken je dat gevoel bij jezelf?",
+          compare_with: ["self_feel_too_much_time"],
+          radialPercent: 42,
+          radialLabel: "42%",
+          radialNote: "imec-context"
+        },
+        {
+          key: "dependence",
+          title: "Moeite met wegleggen",
+          digimeter_stat: "46% ervaart moeite om smartphonegebruik onder controle te houden.",
+          meaning: "Voor een grote groep voelt wegleggen niet altijd makkelijk.",
+          compare_prompt: "Hoe zit dat bij jou?",
+          compare_with: ["self_hard_to_put_away"],
+          radialPercent: 46,
+          radialLabel: "46%",
+          radialNote: "imec-context"
+        },
+        {
+          key: "social_time_loss",
+          title: "Tijdverlies op sociale media",
+          digimeter_stat: "61% vindt sociale media te tijdsintensief.",
+          meaning: "Sociale media voelt voor veel mensen als een grote tijdstrekker.",
+          compare_prompt: "Herken je tijdverlies op sociale media?",
+          compare_with: ["self_social_time_loss"],
+          radialPercent: 61,
+          radialLabel: "61%",
+          radialNote: "imec-context"
+        },
+        {
+          key: "sleep_impact",
+          title: "Impact op slaap",
+          digimeter_stat: "27% rapporteert negatieve impact op slaapkwaliteit.",
+          meaning: "Schermgebruik botst bij een deel van de mensen met rust en slaap.",
+          compare_prompt: "Merk je dit bij jezelf?",
+          compare_with: ["self_sleep_impact"],
+          radialPercent: 27,
+          radialLabel: "27%",
+          radialNote: "imec-context"
+        },
+        {
+          key: "self_rules",
+          title: "Regels voor jezelf",
+          digimeter_stat: "72% legt zichzelf regels op om smartphonegebruik te sturen.",
+          meaning: "Veel mensen proberen hun gebruik bewust te begrenzen.",
+          compare_prompt: "Helpen regels jou ook?",
+          compare_with: ["rules_present", "focus_tools_used", "rules_help_effect"],
+          radialPercent: 72,
+          radialLabel: "72%",
+          radialNote: "imec-context"
+        }
+      ];
+
+      const badgeOptions = ["ik herken dit", "dit is anders bij mij", "dit verrast mij"];
+
+      const learningGoals = [
+        "Ik kan mijn eigen smartphonegewoontes vergelijken met bredere imec-context, zonder mezelf te veroordelen.",
+        "Ik kan uitleggen hoe kleine onderbrekingen (zoals meldingen) mijn aandacht beïnvloeden.",
+        "Ik kan aangeven hoe schermgebruik voor mij samenhangt met tijd, controle, slaap en focus.",
+        "Ik kan één haalbare gewoonte kiezen om de komende week uit te proberen."
+      ];
+
+      const glossaryTerms = [
+        {
+          term: "Schermtijdslot",
+          explanation: "Een ingestelde tijdsgrens die gebruik van je toestel of apps beperkt."
+        },
+        {
+          term: "Ouderlijk toezicht",
+          explanation: "Instellingen die gebruik, inhoud of tijd op een toestel helpen sturen."
+        },
+        {
+          term: "Focusmoment",
+          explanation: "Een moment waarop je bewust wil opletten of doorwerken, zoals les of huiswerk."
+        },
+        {
+          term: "Focusstand / niet storen",
+          explanation: "Een modus die meldingen stiller maakt zodat je minder onderbrekingen krijgt."
+        },
+        {
+          term: "Downtime",
+          explanation: "Een periode waarin bepaalde apps tijdelijk niet beschikbaar zijn."
+        },
+        {
+          term: "Brede context (imec)",
+          explanation: "Cijfers van een grotere groep in Vlaanderen; bedoeld om te vergelijken en te reflecteren."
+        },
+        {
+          term: "Afhankelijkheid",
+          explanation: "Het gevoel dat je smartphone nodig is en dat wegleggen moeilijk wordt."
+        },
+        {
+          term: "Checkmoment",
+          explanation: "Een kort moment waarop je snel je smartphone opent om iets te controleren."
+        }
+      ];
+
+      const answers = {};
+      const cardBadges = {};
+
+      const questionProgress = document.getElementById("question-progress");
+      const questionProgressFill = document.getElementById("question-progress-fill");
+      const questionTitle = document.getElementById("question-title");
+      const questionHelpBtn = document.getElementById("question-help-btn");
+      const questionHelp = document.getElementById("question-help");
+      const optionsContainer = document.getElementById("options");
+      const prevQuestionBtn = document.getElementById("prev-question-btn");
+      const nextQuestionBtn = document.getElementById("next-question-btn");
+      const reflectionPanel = document.getElementById("reflection-panel");
+      const dashboardPanel = document.getElementById("dashboard-panel");
+      const learningGuidePanel = document.getElementById("learning-guide-panel");
+
+      const cardProgress = document.getElementById("card-progress");
+      const cardTitle = document.getElementById("card-title");
+      const myAnswer = document.getElementById("my-answer");
+      const cardQuestion = document.getElementById("card-question");
+      const badgeRow = document.getElementById("badge-row");
+      const digimeterStat = document.getElementById("digimeter-stat");
+      const digimeterMeaning = document.getElementById("digimeter-meaning");
+      const radialProgress = document.getElementById("radial-progress");
+      const radialValue = document.getElementById("radial-value");
+      const radialNote = document.getElementById("radial-note");
+      const prevCardBtn = document.getElementById("prev-card-btn");
+      const nextCardBtn = document.getElementById("next-card-btn");
+      const slotSummary = document.getElementById("slot-summary");
+      const savePngBtn = document.getElementById("save-png-btn");
+
+      const summaryInputs = {
+        compare_recognition: document.getElementById("compare_recognition"),
+        compare_difference: document.getElementById("compare_difference"),
+        compare_question: document.getElementById("compare_question"),
+        risky_habit: document.getElementById("risky_habit")
+      };
+      const carryForwardList = document.getElementById("carry-forward-list");
+      const exportModal = document.getElementById("export-modal");
+      const exportModalBackdrop = document.getElementById("export-modal-backdrop");
+      const exportStudentName = document.getElementById("export-student-name");
+      const exportStudentClass = document.getElementById("export-student-class");
+      const exportError = document.getElementById("export-error");
+      const exportCancelBtn = document.getElementById("export-cancel-btn");
+      const exportConfirmBtn = document.getElementById("export-confirm-btn");
+      const guideStudentMeta = document.getElementById("guide-student-meta");
+      const guideGoalsList = document.getElementById("guide-goals-list");
+      const guideGlossary = document.getElementById("guide-glossary");
+      const guideInsightsList = document.getElementById("guide-insights-list");
+      const guideNextStep = document.getElementById("guide-next-step");
+      const guideBackBtn = document.getElementById("guide-back-btn");
+      const guideDownloadBtn = document.getElementById("guide-download-btn");
+
+      let currentQuestionIndex = 0;
+      let currentCardIndex = 0;
+      let summaryUnlocked = false;
+      let currentStudentName = "";
+      let currentStudentClass = "";
+
+      function humanize(value) {
+        if (!value) return "nog niet ingevuld";
+        return value.replaceAll("_", " ");
+      }
+
+      function formatMinutes(totalMinutes) {
+        const clamped = Math.max(0, Math.min(1440, Number(totalMinutes) || 0));
+        const hours = Math.floor(clamped / 60);
+        const minutes = clamped % 60;
+        return `${hours} u ${minutes} min`;
+      }
+
+      function getQuestionByKey(key) {
+        return reflectionQuestions.find((item) => item.key === key);
+      }
+
+      function getAnswerLabel(key, value) {
+        const question = getQuestionByKey(key);
+        if (!question || !value) return "nog niet ingevuld";
+        if (question.type === "radial_time") {
+          return formatMinutes(value);
+        }
+        if (!question.options) {
+          return humanize(value);
+        }
+        const option = question.options.find((entry) => entry.value === value);
+        return option ? option.label : humanize(value);
+      }
+
+      function renderQuestion() {
+        const question = reflectionQuestions[currentQuestionIndex];
+        const progressText = `Vraag ${currentQuestionIndex + 1} van ${reflectionQuestions.length}`;
+        const progressPct = ((currentQuestionIndex + 1) / reflectionQuestions.length) * 100;
+
+        questionProgress.textContent = progressText;
+        questionProgressFill.style.width = `${progressPct}%`;
+        questionTitle.textContent = question.question;
+
+        if (question.help) {
+          questionHelpBtn.classList.remove("hidden");
+          questionHelp.textContent = question.help;
+          questionHelp.classList.add("hidden");
+          questionHelpBtn.setAttribute("aria-expanded", "false");
+        } else {
+          questionHelpBtn.classList.add("hidden");
+          questionHelp.classList.add("hidden");
+          questionHelp.textContent = "";
+        }
+
+        optionsContainer.innerHTML = "";
+        if (question.type === "radial_time") {
+          const min = Number(question.min ?? 0);
+          const max = Number(question.max ?? 1440);
+          const step = Number(question.step ?? 5);
+          const startingMinutes = Number.isFinite(Number(answers[question.key]))
+            ? Number(answers[question.key])
+            : 180;
+
+          const picker = document.createElement("div");
+          picker.className = "time-picker";
+          picker.innerHTML = `
+            <div class="time-radial-wrap">
+              <svg class="time-radial" viewBox="0 0 120 120" aria-hidden="true">
+                <defs>
+                  <linearGradient id="timeRingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#5200ff"></stop>
+                    <stop offset="100%" stop-color="#03ddef"></stop>
+                  </linearGradient>
+                </defs>
+                <circle class="time-radial-track" cx="60" cy="60" r="52"></circle>
+                <circle class="time-radial-progress" cx="60" cy="60" r="52" style="stroke: url(#timeRingGradient)"></circle>
+                <circle class="time-radial-knob" cx="60" cy="8" r="5"></circle>
+              </svg>
+              <div class="time-radial-center">
+                <p class="time-value-main">0 u 0 min</p>
+                <p class="time-value-sub">0 min per dag</p>
+              </div>
+            </div>
+            <input class="time-range" type="range" min="${min}" max="${max}" step="${step}" />
+            <div class="time-range-ends"><span>0 u</span><span>24 u</span></div>
+            <div class="time-input-row">
+              <div class="time-input-box">
+                <label>Uren</label>
+                <input class="time-hours" type="number" min="0" max="24" step="1" inputmode="numeric" />
+              </div>
+              <div class="time-input-box">
+                <label>Minuten</label>
+                <input class="time-minutes" type="number" min="0" max="59" step="1" inputmode="numeric" />
+              </div>
+            </div>
+          `;
+          optionsContainer.appendChild(picker);
+
+          const rangeInput = picker.querySelector(".time-range");
+          const hoursInput = picker.querySelector(".time-hours");
+          const minutesInput = picker.querySelector(".time-minutes");
+          const valueMain = picker.querySelector(".time-value-main");
+          const valueSub = picker.querySelector(".time-value-sub");
+          const progressRing = picker.querySelector(".time-radial-progress");
+          const knob = picker.querySelector(".time-radial-knob");
+
+          const radius = 52;
+          const circumference = 2 * Math.PI * radius;
+          progressRing.style.strokeDasharray = `${circumference}`;
+
+          function clampMinutes(minutesValue) {
+            const numeric = Number(minutesValue);
+            if (!Number.isFinite(numeric)) return min;
+            return Math.max(min, Math.min(max, Math.round(numeric)));
+          }
+
+          function setMinutes(minutesValue) {
+            const total = clampMinutes(minutesValue);
+            const h = Math.floor(total / 60);
+            const m = total % 60;
+            const percent = (total / max) * 100;
+            const offset = circumference * (1 - percent / 100);
+            const angle = ((total / max) * Math.PI * 2) - (Math.PI / 2);
+            const knobX = 60 + (radius * Math.cos(angle));
+            const knobY = 60 + (radius * Math.sin(angle));
+
+            answers[question.key] = String(total);
+
+            rangeInput.value = String(total);
+            hoursInput.value = String(h);
+            minutesInput.value = String(m);
+            minutesInput.disabled = h === 24;
+
+            valueMain.textContent = `${h} u ${m} min`;
+            valueSub.textContent = `${total} min per dag`;
+
+            progressRing.style.strokeDashoffset = `${offset}`;
+            knob.setAttribute("cx", knobX.toFixed(2));
+            knob.setAttribute("cy", knobY.toFixed(2));
+
+            nextQuestionBtn.disabled = false;
+          }
+
+          rangeInput.addEventListener("input", () => {
+            setMinutes(rangeInput.value);
+          });
+
+          hoursInput.addEventListener("input", () => {
+            const rawHours = Number(hoursInput.value);
+            const h = Number.isFinite(rawHours) ? Math.max(0, Math.min(24, Math.round(rawHours))) : 0;
+            const m = h === 24 ? 0 : Math.max(0, Math.min(59, Number(minutesInput.value) || 0));
+            setMinutes((h * 60) + m);
+          });
+
+          minutesInput.addEventListener("input", () => {
+            const rawHours = Number(hoursInput.value);
+            const h = Number.isFinite(rawHours) ? Math.max(0, Math.min(24, Math.round(rawHours))) : 0;
+            const m = h === 24 ? 0 : Math.max(0, Math.min(59, Math.round(Number(minutesInput.value) || 0)));
+            setMinutes((h * 60) + m);
+          });
+
+          setMinutes(startingMinutes);
+        } else {
+          question.options.forEach((option) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "option-btn";
+            button.textContent = option.label;
+            button.dataset.value = option.value;
+            if (answers[question.key] === option.value) {
+              button.classList.add("selected");
+            }
+
+            button.addEventListener("click", () => {
+              answers[question.key] = option.value;
+              renderQuestion();
+            });
+
+            optionsContainer.appendChild(button);
+          });
+        }
+
+        prevQuestionBtn.disabled = currentQuestionIndex === 0;
+        nextQuestionBtn.disabled = !answers[question.key];
+        nextQuestionBtn.textContent = currentQuestionIndex === reflectionQuestions.length - 1
+          ? "Toon mijn dashboard"
+          : "Volgende";
+      }
+
+      questionHelpBtn.addEventListener("click", () => {
+        const isHidden = questionHelp.classList.contains("hidden");
+        questionHelp.classList.toggle("hidden", !isHidden);
+        questionHelpBtn.setAttribute("aria-expanded", String(isHidden));
+      });
+
+      prevQuestionBtn.addEventListener("click", () => {
+        if (currentQuestionIndex === 0) return;
+        currentQuestionIndex -= 1;
+        renderQuestion();
+      });
+
+      function updateSummaryVisibility() {
+        if (summaryUnlocked) {
+          slotSummary.classList.remove("hidden");
+        } else {
+          slotSummary.classList.add("hidden");
+        }
+      }
+
+      function openDashboard() {
+        reflectionPanel.classList.add("hidden");
+        dashboardPanel.classList.remove("hidden");
+        learningGuidePanel.classList.add("hidden");
+        summaryUnlocked = false;
+        updateSummaryVisibility();
+
+        renderCard();
+        updateCarryForward();
+        dashboardPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      nextQuestionBtn.addEventListener("click", () => {
+        const question = reflectionQuestions[currentQuestionIndex];
+        if (!answers[question.key]) return;
+
+        if (currentQuestionIndex < reflectionQuestions.length - 1) {
+          currentQuestionIndex += 1;
+          renderQuestion();
+          return;
+        }
+
+        openDashboard();
+      });
+
+      function buildMyAnswer(card) {
+        const builders = {
+          screen_time: () => {
+            const average = getAnswerLabel("screen_time_avg_week_minutes", answers.screen_time_avg_week_minutes);
+            const expectation = getAnswerLabel("screen_time_expectation", answers.screen_time_expectation);
+            const checked = getAnswerLabel("screen_time_checked", answers.screen_time_checked);
+            return `Gemiddelde van de voorbije week: ${average} per dag. Je denkt dat dit ${expectation} is t.o.v. het gemiddelde. Je checkt je schermtijd ${checked}.`;
+          },
+          too_much_time: () => `Jouw antwoord: ${getAnswerLabel("self_feel_too_much_time", answers.self_feel_too_much_time)}.`,
+          dependence: () => `Jouw antwoord: ${getAnswerLabel("self_hard_to_put_away", answers.self_hard_to_put_away)}.`,
+          social_time_loss: () => `Jouw antwoord: ${getAnswerLabel("self_social_time_loss", answers.self_social_time_loss)}.`,
+          sleep_impact: () => `Jouw antwoord: ${getAnswerLabel("self_sleep_impact", answers.self_sleep_impact)}.`,
+          self_rules: () => {
+            const rules = getAnswerLabel("rules_present", answers.rules_present);
+            const focus = getAnswerLabel("focus_tools_used", answers.focus_tools_used);
+            const effect = getAnswerLabel("rules_help_effect", answers.rules_help_effect);
+            return `Je gebruikt regels ${rules}, focusstand ${focus}, en het effect voelt ${effect}.`;
+          }
+        };
+
+        return builders[card.key] ? builders[card.key]() : "Nog niet ingevuld.";
+      }
+
+      function animateRadial(percent, centerLabel, note) {
+        const clamped = Math.max(0, Math.min(100, percent));
+        const radius = 52;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference * (1 - clamped / 100);
+
+        radialProgress.style.transition = "none";
+        radialProgress.style.strokeDasharray = `${circumference}`;
+        radialProgress.style.strokeDashoffset = `${circumference}`;
+
+        radialValue.textContent = centerLabel;
+        radialNote.textContent = note || "";
+
+        requestAnimationFrame(() => {
+          radialProgress.style.transition = "stroke-dashoffset 900ms cubic-bezier(0.22, 1, 0.36, 1)";
+          radialProgress.style.strokeDashoffset = `${offset}`;
+        });
+      }
+
+      function renderBadgeRow(cardKey) {
+        badgeRow.innerHTML = "";
+        const selected = cardBadges[cardKey];
+
+        badgeOptions.forEach((option) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "badge-btn";
+          button.textContent = option;
+          if (selected === option) {
+            button.classList.add("selected");
+          }
+
+          button.addEventListener("click", () => {
+            cardBadges[cardKey] = option;
+            renderBadgeRow(cardKey);
+          });
+
+          badgeRow.appendChild(button);
+        });
+      }
+
+      function renderCard() {
+        const card = digimeterCards[currentCardIndex];
+        cardProgress.textContent = `Kaart ${currentCardIndex + 1} van ${digimeterCards.length}`;
+
+        cardTitle.textContent = card.title;
+        myAnswer.textContent = buildMyAnswer(card);
+        cardQuestion.textContent = card.compare_prompt;
+        digimeterStat.textContent = card.digimeter_stat;
+        digimeterMeaning.textContent = card.meaning;
+
+        renderBadgeRow(card.key);
+        animateRadial(card.radialPercent, card.radialLabel, card.radialNote);
+
+        prevCardBtn.disabled = currentCardIndex === 0;
+        if (currentCardIndex === digimeterCards.length - 1) {
+          nextCardBtn.textContent = summaryUnlocked ? "Slotreflectie open" : "Naar slotreflectie";
+        } else {
+          nextCardBtn.textContent = "Volgende kaart";
+        }
+      }
+
+      prevCardBtn.addEventListener("click", () => {
+        if (currentCardIndex === 0) return;
+        currentCardIndex -= 1;
+        summaryUnlocked = false;
+        updateSummaryVisibility();
+        renderCard();
+      });
+
+      nextCardBtn.addEventListener("click", () => {
+        const isLastCard = currentCardIndex === digimeterCards.length - 1;
+        if (!isLastCard) {
+          currentCardIndex += 1;
+          renderCard();
+          return;
+        }
+
+        if (!summaryUnlocked) {
+          summaryUnlocked = true;
+          updateSummaryVisibility();
+          renderCard();
+          slotSummary.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+
+      function updateCarryForward() {
+        const values = {
+          recognition: summaryInputs.compare_recognition.value.trim(),
+          difference: summaryInputs.compare_difference.value.trim(),
+          question: summaryInputs.compare_question.value.trim(),
+          habit: summaryInputs.risky_habit.value.trim()
+        };
+
+        const filled = Object.values(values).filter(Boolean);
+        if (filled.length === 0) {
+          carryForwardList.innerHTML = "<li>Vul je slotreflectie in om dit blok te vullen.</li>";
+          return;
+        }
+
+        carryForwardList.innerHTML = "";
+        if (values.recognition) {
+          carryForwardList.innerHTML += `<li><strong>Vergelijking die ik herken:</strong> ${values.recognition}</li>`;
+        }
+        if (values.difference) {
+          carryForwardList.innerHTML += `<li><strong>Verschil dat opvalt:</strong> ${values.difference}</li>`;
+        }
+        if (values.question) {
+          carryForwardList.innerHTML += `<li><strong>Vraag voor de volgende les:</strong> ${values.question}</li>`;
+        }
+        if (values.habit) {
+          carryForwardList.innerHTML += `<li><strong>Gewoonte om aan te pakken:</strong> ${values.habit}</li>`;
+        }
+      }
+
+      function buildGuideInsights() {
+        const insights = [];
+        const recognition = summaryInputs.compare_recognition.value.trim();
+        const difference = summaryInputs.compare_difference.value.trim();
+        const question = summaryInputs.compare_question.value.trim();
+        const habit = summaryInputs.risky_habit.value.trim();
+
+        if (recognition) {
+          insights.push(`Je herkent vooral: ${recognition}`);
+        }
+        if (difference) {
+          insights.push(`Het verschil dat je ziet: ${difference}`);
+        }
+
+        const averageMinutes = Number(answers.screen_time_avg_week_minutes);
+        if (Number.isFinite(averageMinutes)) {
+          const diff = averageMinutes - 183;
+          if (Math.abs(diff) <= 15) {
+            insights.push("Je weekgemiddelde ligt dicht bij de contextwaarde van 183 minuten per dag.");
+          } else if (diff > 15) {
+            insights.push(`Je weekgemiddelde ligt ongeveer ${Math.round(diff)} minuten hoger dan 183 minuten.`);
+          } else {
+            insights.push(`Je weekgemiddelde ligt ongeveer ${Math.round(Math.abs(diff))} minuten lager dan 183 minuten.`);
+          }
+        }
+
+        if (answers.main_distraction) {
+          insights.push(`Je grootste afleiding is: ${getAnswerLabel("main_distraction", answers.main_distraction)}.`);
+        }
+
+        if (answers.rules_help_effect) {
+          insights.push(`Voor jou voelen regels en instellingen: ${getAnswerLabel("rules_help_effect", answers.rules_help_effect)}.`);
+        }
+
+        const badgeValues = Object.values(cardBadges);
+        if (badgeValues.length > 0) {
+          const surpriseCount = badgeValues.filter((v) => v === "dit verrast mij").length;
+          const differenceCount = badgeValues.filter((v) => v === "dit is anders bij mij").length;
+          if (surpriseCount > 0) {
+            insights.push(`Je had ${surpriseCount} kaart(en) die je verrasten.`);
+          }
+          if (differenceCount > 0) {
+            insights.push(`Bij ${differenceCount} kaart(en) voelde je een duidelijk verschil met de context.`);
+          }
+        }
+
+        if (question) {
+          insights.push(`Je onderzoeksvraag voor later: ${question}`);
+        }
+        if (habit) {
+          insights.push(`Je gekozen volgende stap: ${habit}`);
+        }
+
+        return [...new Set(insights)].slice(0, 8);
+      }
+
+      function renderLearningGuide(studentName, studentClass) {
+        const today = new Date().toLocaleDateString("nl-BE");
+        guideStudentMeta.textContent = `Naam: ${studentName} · Klas: ${studentClass} · Datum: ${today}`;
+
+        guideGoalsList.innerHTML = "";
+        learningGoals.forEach((goal) => {
+          guideGoalsList.innerHTML += `<li>${goal}</li>`;
+        });
+
+        guideGlossary.innerHTML = "";
+        glossaryTerms.forEach((item) => {
+          guideGlossary.innerHTML += `
+            <div class="glossary-item">
+              <dt>${item.term}</dt>
+              <dd>${item.explanation}</dd>
+            </div>
+          `;
+        });
+
+        const insights = buildGuideInsights();
+        guideInsightsList.innerHTML = "";
+        if (insights.length === 0) {
+          guideInsightsList.innerHTML = "<li>Vul je slotreflectie in om hier persoonlijke inzichten te zien.</li>";
+        } else {
+          insights.forEach((insight) => {
+            guideInsightsList.innerHTML += `<li>${insight}</li>`;
+          });
+        }
+
+        const nextStep = summaryInputs.risky_habit.value.trim()
+          ? `Werk deze week aan: ${summaryInputs.risky_habit.value.trim()}`
+          : "Kies één kleine gewoonte die je deze week wil testen.";
+        guideNextStep.textContent = nextStep;
+      }
+
+      function openLearningGuide(studentName, studentClass) {
+        currentStudentName = studentName || currentStudentName;
+        currentStudentClass = studentClass || currentStudentClass;
+        dashboardPanel.classList.add("hidden");
+        learningGuidePanel.classList.remove("hidden");
+        renderLearningGuide(currentStudentName, currentStudentClass);
+        learningGuidePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      function openExportModal() {
+        exportError.textContent = "";
+        exportModal.classList.remove("hidden");
+        exportModal.setAttribute("aria-hidden", "false");
+        requestAnimationFrame(() => {
+          exportStudentName.focus();
+        });
+      }
+
+      function closeExportModal() {
+        exportModal.classList.add("hidden");
+        exportModal.setAttribute("aria-hidden", "true");
+      }
+
+      function sanitizeForFilename(input) {
+        return input
+          .toLowerCase()
+          .trim()
+          .replace(/\\s+/g, "_")
+          .replace(/[^a-z0-9_-]/g, "")
+          .slice(0, 40) || "leerling";
+      }
+
+      function drawGuideSection(ctx, title, lines, x, y, width, height) {
+        const padding = 18;
+        const titleBlockHeight = 84;
+        const topStart = y + titleBlockHeight + 18;
+        const maxY = y + height - 20;
+        const lineHeight = 30;
+        const textMaxWidth = width - (padding * 2);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#d3e2dd";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, height, 14);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#1f4541";
+        ctx.font = "700 32px Roboto";
+        ctx.fillText(title, x + padding, y + 46);
+
+        ctx.strokeStyle = "#e2ece8";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x + padding, y + titleBlockHeight);
+        ctx.lineTo(x + width - padding, y + titleBlockHeight);
+        ctx.stroke();
+
+        ctx.fillStyle = "#2f4542";
+        ctx.font = "500 24px Roboto";
+        let cursorY = topStart;
+
+        for (let i = 0; i < lines.length; i += 1) {
+          if (cursorY + lineHeight > maxY) {
+            ctx.fillText("...", x + padding, maxY - 4);
+            break;
+          }
+          ctx.fillText("•", x + padding, cursorY);
+          const nextY = wrapText(ctx, lines[i], x + padding + 26, cursorY, textMaxWidth - 26, lineHeight);
+          cursorY = nextY + 10;
+        }
+      }
+
+      function exportLearningGuideToPng() {
+        const studentName = currentStudentName || "Onbekend";
+        const studentClass = currentStudentClass || "Onbekend";
+        const dateText = new Date().toLocaleDateString("nl-BE");
+
+        const goalsLines = learningGoals.map((goal) => goal);
+        const glossaryLines = glossaryTerms.map((item) => `${item.term}: ${item.explanation}`);
+        const insightsLines = buildGuideInsights();
+        const nextStepLine = summaryInputs.risky_habit.value.trim()
+          ? `Werk deze week aan: ${summaryInputs.risky_habit.value.trim()}`
+          : "Kies één kleine gewoonte die je deze week wil testen.";
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 1500;
+        canvas.height = 2700;
+        const ctx = canvas.getContext("2d");
+
+        const gradient = ctx.createLinearGradient(0, 0, 1500, 2700);
+        gradient.addColorStop(0, "#f5f3ff");
+        gradient.addColorStop(1, "#edfafd");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#5200ff";
+        ctx.fillRect(0, 0, canvas.width, 225);
+        ctx.fillStyle = "#f4f5ff";
+        ctx.font = "700 58px Roboto";
+        ctx.fillText("Leerwijzer", 72, 98);
+        ctx.font = "500 30px Roboto";
+        ctx.fillText("Wat hebben we geleerd?", 72, 148);
+
+        ctx.fillStyle = "#2d1f67";
+        ctx.font = "500 28px Roboto";
+        ctx.fillText(`Naam: ${studentName}`, 72, 205);
+        ctx.fillText(`Klas: ${studentClass}`, 560, 205);
+        ctx.fillText(`Datum: ${dateText}`, 980, 205);
+
+        drawGuideSection(ctx, "Leerdoelen", goalsLines, 72, 270, 1356, 560);
+        drawGuideSection(ctx, "Moeilijke woorden uitgelegd", glossaryLines, 72, 858, 1356, 860);
+        drawGuideSection(
+          ctx,
+          "Jouw kerninzichten",
+          insightsLines.length > 0 ? insightsLines : ["Vul je slotreflectie in om hier persoonlijke inzichten te zien."],
+          72,
+          1746,
+          1356,
+          560
+        );
+
+        ctx.fillStyle = "#fff3e8";
+        ctx.strokeStyle = "#f0ceb5";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(72, 2334, 1356, 270, 14);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#6a411f";
+        ctx.font = "700 34px Roboto";
+        ctx.fillText("Volgende stap", 98, 2390);
+        ctx.font = "500 30px Roboto";
+        wrapText(ctx, nextStepLine, 98, 2442, 1308, 36);
+
+        const filename = `leerwijzer_${sanitizeForFilename(studentName)}_${sanitizeForFilename(studentClass)}.png`;
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = filename;
+        link.click();
+      }
+
+      function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+        const words = String(text).split(" ");
+        let line = "";
+        for (const word of words) {
+          const test = line ? `${line} ${word}` : word;
+          if (ctx.measureText(test).width > maxWidth && line) {
+            ctx.fillText(line, x, y);
+            y += lineHeight;
+            line = word;
+          } else {
+            line = test;
+          }
+        }
+        if (line) {
+          ctx.fillText(line, x, y);
+          y += lineHeight;
+        }
+        return y;
+      }
+
+      function drawFieldBox(ctx, title, content, x, y, width) {
+        const padding = 18;
+        const lineHeight = 34;
+        const textMaxWidth = width - (padding * 2);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.strokeStyle = "#cfded9";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, width, 180, 14);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#2f4b47";
+        ctx.font = "700 34px Roboto";
+        ctx.fillText(title, x + padding, y + 50);
+
+        ctx.fillStyle = "#2f3f3d";
+        ctx.font = "500 30px Roboto";
+        wrapText(ctx, content || "Nog niet ingevuld", x + padding, y + 98, textMaxWidth, lineHeight);
+      }
+
+      function exportSummaryToPng(studentName, studentClass) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1400;
+        canvas.height = 1900;
+        const ctx = canvas.getContext("2d");
+
+        const gradient = ctx.createLinearGradient(0, 0, 1400, 1900);
+        gradient.addColorStop(0, "#f5f3ff");
+        gradient.addColorStop(1, "#edfafd");
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#5200ff";
+        ctx.fillRect(0, 0, canvas.width, 220);
+        ctx.fillStyle = "#f4f5ff";
+        ctx.font = "700 56px Roboto";
+        ctx.fillText("Slotreflectie", 72, 98);
+        ctx.font = "500 30px Roboto";
+        ctx.fillText("Mediawijsheid - Mijn profiel en context", 72, 148);
+
+        ctx.fillStyle = "#2d1f67";
+        ctx.font = "500 28px Roboto";
+        ctx.fillText(`Naam: ${studentName}`, 72, 205);
+        ctx.fillText(`Klas: ${studentClass}`, 560, 205);
+
+        const fields = [
+          { title: "Eén vergelijking die ik herken", value: summaryInputs.compare_recognition.value.trim() },
+          { title: "Eén verschil dat mij opvalt", value: summaryInputs.compare_difference.value.trim() },
+          { title: "Eén vraag voor de volgende les", value: summaryInputs.compare_question.value.trim() },
+          { title: "Eén gewoonte die ik later wil aanpakken", value: summaryInputs.risky_habit.value.trim() }
+        ];
+
+        let y = 270;
+        fields.forEach((field) => {
+          drawFieldBox(ctx, field.title, field.value, 72, y, 1256);
+          y += 205;
+        });
+
+        ctx.fillStyle = "#fff3e8";
+        ctx.strokeStyle = "#f0ceb5";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(72, y + 14, 1256, 260, 14);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#6a411f";
+        ctx.font = "700 34px Roboto";
+        ctx.fillText("Mee naar de volgende les", 98, y + 64);
+
+        const bullets = [
+          summaryInputs.compare_recognition.value.trim() || "Nog niet ingevuld",
+          summaryInputs.compare_difference.value.trim() || "Nog niet ingevuld",
+          summaryInputs.compare_question.value.trim() || "Nog niet ingevuld",
+          summaryInputs.risky_habit.value.trim() || "Nog niet ingevuld"
+        ];
+
+        ctx.font = "500 28px Roboto";
+        let bulletY = y + 112;
+        bullets.forEach((item) => {
+          ctx.fillText("•", 100, bulletY);
+          bulletY = wrapText(ctx, item, 126, bulletY, 1170, 34);
+          bulletY += 8;
+        });
+
+        const filename = `slotreflectie_${sanitizeForFilename(studentName)}_${sanitizeForFilename(studentClass)}.png`;
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = filename;
+        link.click();
+      }
+
+      savePngBtn.addEventListener("click", () => {
+        if (!summaryUnlocked) return;
+        openExportModal();
+      });
+
+      exportCancelBtn.addEventListener("click", closeExportModal);
+      exportModalBackdrop.addEventListener("click", closeExportModal);
+
+      exportConfirmBtn.addEventListener("click", () => {
+        const studentName = exportStudentName.value.trim();
+        const studentClass = exportStudentClass.value.trim();
+
+        if (!studentName || !studentClass) {
+          exportError.textContent = "Vul zowel naam als klas in.";
+          return;
+        }
+
+        exportError.textContent = "";
+        currentStudentName = studentName;
+        currentStudentClass = studentClass;
+        exportSummaryToPng(studentName, studentClass);
+        closeExportModal();
+        openLearningGuide(studentName, studentClass);
+      });
+
+      guideBackBtn.addEventListener("click", () => {
+        learningGuidePanel.classList.add("hidden");
+        dashboardPanel.classList.remove("hidden");
+        dashboardPanel.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      guideDownloadBtn.addEventListener("click", () => {
+        exportLearningGuideToPng();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !exportModal.classList.contains("hidden")) {
+          closeExportModal();
+        }
+      });
+
+      Object.values(summaryInputs).forEach((input) => {
+        input.addEventListener("input", updateCarryForward);
+      });
+
+      renderQuestion();
+    </script>
+    <script>
+      (function () {
+        const btn = document.getElementById("globalMenuBtn");
+        const closeBtn = document.getElementById("globalMenuCloseBtn");
+        const drawer = document.getElementById("globalMenuDrawer");
+        const backdrop = document.getElementById("globalMenuBackdrop");
+        if (!btn || !closeBtn || !drawer || !backdrop) return;
+
+        function openMenu() {
+          drawer.classList.remove("hidden");
+          backdrop.classList.remove("hidden");
+          requestAnimationFrame(() => drawer.classList.add("open"));
+          btn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMenu() {
+          drawer.classList.remove("open");
+          backdrop.classList.add("hidden");
+          btn.setAttribute("aria-expanded", "false");
+          setTimeout(() => drawer.classList.add("hidden"), 180);
+        }
+
+        btn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", closeMenu);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeMenu();
+        });
+      })();
+    </script>
+  </body>
+</html>

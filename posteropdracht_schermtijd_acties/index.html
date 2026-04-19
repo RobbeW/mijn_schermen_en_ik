@@ -1,0 +1,2101 @@
+<!doctype html>
+<html lang="nl-BE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slotopdracht - schermtijd acties en posterplan</title>
+    <style>
+      :root {
+        --brand-primary: #5200ff;
+        --brand-secondary: #03ddef;
+        --bg: #f8f7f3;
+        --surface: #ffffff;
+        --text: #111111;
+        --muted: #555555;
+        --border: #d9d4f5;
+        --success: #1f8a4d;
+        --warning: #c47a00;
+        --danger: #9a2e2e;
+        --radius: 16px;
+        --radius-sm: 12px;
+        --shadow: 0 10px 26px rgba(25, 8, 82, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 8%, #ffffff 0%, rgba(255, 255, 255, 0) 42%),
+          linear-gradient(140deg, #f5f3ff 0%, #f8f7f3 52%, #edfafd 100%);
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .app {
+        width: min(1080px, 94vw);
+        margin: 20px auto 36px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .topbar {
+        padding: 18px;
+        background: linear-gradient(120deg, #5200ff 0%, #3926b8 58%, #03ddef 100%);
+        color: #f4f5ff;
+      }
+
+      .topbar-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.35rem, 3.6vw, 2rem);
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        font-size: 0.95rem;
+        color: #e3e5ff;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .status-pill {
+        border: 1px solid rgba(227, 229, 255, 0.45);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.84rem;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f7f8ff;
+      }
+
+      .progress-wrap {
+        margin-top: 12px;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.25);
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #ffffff 0%, #b8fbff 100%);
+        transition: width 220ms ease;
+      }
+
+      .progress-text {
+        margin: 8px 0 0;
+        font-size: 0.9rem;
+        color: #eef0ff;
+      }
+
+      .stage-nav {
+        margin-top: 14px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .stage-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .stage-tab {
+        border: 1px solid #cfc8f5;
+        border-radius: 999px;
+        background: #fbfaff;
+        color: #2a2360;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .stage-tab:hover {
+        border-color: #8f7de6;
+      }
+
+      .stage-tab.active {
+        border-color: var(--brand-primary);
+        background: #efe9ff;
+        color: #26006f;
+      }
+
+      .stage-tab:disabled {
+        opacity: 0.52;
+        cursor: not-allowed;
+      }
+
+      .stage-move {
+        display: flex;
+        gap: 8px;
+      }
+
+      .section {
+        margin-top: 14px;
+        padding: 16px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1rem;
+      }
+
+      .instruction {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      .help-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        border: 1px solid #cec7f4;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .help-btn:hover {
+        background: #ece5ff;
+      }
+
+      .help-btn:focus-visible,
+      .q-help-btn:focus-visible,
+      .btn:focus-visible,
+      .stage-tab:focus-visible,
+      .chip:focus-visible,
+      .short-text:focus-visible,
+      .text-input:focus-visible,
+      .select-input:focus-visible {
+        outline: 3px solid rgba(82, 0, 255, 0.22);
+        outline-offset: 2px;
+      }
+
+      .help-box {
+        margin-top: 8px;
+        border: 1px solid #d7cff7;
+        border-left: 4px solid var(--brand-secondary);
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: #f6feff;
+        color: #25333b;
+        font-size: 0.9rem;
+      }
+
+      .resource-row {
+        margin-top: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .link-btn {
+        display: inline-block;
+        border: 1px solid #bfb6f2;
+        border-radius: 999px;
+        background: #fff;
+        color: #2d187b;
+        padding: 7px 11px;
+        font-size: 0.84rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .link-btn:hover {
+        background: #efe9ff;
+      }
+
+      .question-list {
+        margin-top: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .q-card {
+        border: 1px solid #e2ddf9;
+        border-radius: var(--radius-sm);
+        background: #fff;
+        padding: 12px;
+      }
+
+      .q-label {
+        font-weight: 700;
+        font-size: 0.96rem;
+      }
+
+      .q-label-row {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .q-help-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid #cec7f4;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        font-weight: 700;
+        font-size: 0.82rem;
+        cursor: pointer;
+        flex: 0 0 auto;
+        margin-top: -1px;
+      }
+
+      .q-help-btn:hover {
+        background: #ece5ff;
+      }
+
+      .q-help-box {
+        margin: 7px 0 0;
+        border: 1px solid #d7cff7;
+        border-left: 4px solid var(--brand-secondary);
+        border-radius: 10px;
+        padding: 7px 9px;
+        background: #f6feff;
+        color: #25333b;
+        font-size: 0.86rem;
+      }
+
+      .short-text,
+      .text-input,
+      .select-input {
+        width: 100%;
+        margin-top: 8px;
+        border: 1px solid #d8d1f7;
+        border-radius: 10px;
+        padding: 9px 10px;
+        font: inherit;
+        color: var(--text);
+        background: #fff;
+      }
+
+      .short-text {
+        min-height: 84px;
+        resize: vertical;
+      }
+
+      .counter {
+        margin: 4px 0 0;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .section-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #4500d7;
+      }
+
+      .btn-secondary {
+        background: #fff;
+        border-color: #d1caf5;
+        color: #312c58;
+      }
+
+      .btn-secondary:hover {
+        background: #f6f4ff;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .chip-row {
+        margin-top: 8px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        border: 1px solid #ddd7f8;
+        border-radius: 999px;
+        background: #fcfbff;
+        color: #2f2f2f;
+        padding: 7px 11px;
+        font: inherit;
+        font-size: 0.82rem;
+        cursor: pointer;
+      }
+
+      .chip:hover {
+        border-color: #a491ea;
+      }
+
+      .action-grid {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .action-card {
+        border: 1px solid #ddd8f8;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .action-meta {
+        margin-top: 4px;
+        font-size: 0.85rem;
+        color: #55507a;
+      }
+
+      .action-focus {
+        margin-top: 6px;
+        font-size: 0.87rem;
+        color: #2f2a58;
+      }
+
+      .action-scaffold {
+        margin: 6px 0 0;
+        font-size: 0.84rem;
+        color: #5e5883;
+      }
+
+      .score-grid {
+        margin-top: 8px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .warning-text {
+        margin: 8px 0 0;
+        color: var(--warning);
+        font-size: 0.86rem;
+      }
+
+      .phase-status-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 6px;
+        font-size: 0.88rem;
+      }
+
+      .phase-status-list li {
+        color: #4a436f;
+      }
+
+      .phase-status-list li.done {
+        color: var(--success);
+      }
+
+      .danger-text {
+        margin: 8px 0 0;
+        color: var(--danger);
+        font-size: 0.86rem;
+      }
+
+      .ok-text {
+        margin: 8px 0 0;
+        color: var(--success);
+        font-size: 0.86rem;
+      }
+
+      .research-card,
+      .ranking-card,
+      .poster-card,
+      .summary-card {
+        margin-top: 10px;
+        border: 1px solid #ddd8f8;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .ranking-table-wrap {
+        margin-top: 8px;
+        overflow-x: auto;
+      }
+
+      .ranking-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+      }
+
+      .ranking-table th,
+      .ranking-table td {
+        border-bottom: 1px solid #e7e2fb;
+        padding: 8px;
+        text-align: left;
+        font-size: 0.9rem;
+        vertical-align: top;
+      }
+
+      .ranking-table th {
+        color: #2d1f67;
+      }
+
+      .checklist {
+        margin: 8px 0 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid #ddd7f8;
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: #fcfbff;
+      }
+
+      .check-item input {
+        accent-color: var(--brand-primary);
+      }
+
+      .summary-grid {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .summary-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      .summary-list li + li {
+        margin-top: 5px;
+      }
+
+      .summary-source {
+        border: 1px solid #d9d3f8;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .summary-head h3 {
+        margin: 0;
+      }
+
+      .summary-head p {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .site-footer {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 0.82rem;
+        color: #5f5f5f;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .global-menu-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1300;
+        width: 44px;
+        height: 44px;
+        border: 1px solid #cec7f4;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #341098;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(25, 8, 82, 0.14);
+      }
+
+      .global-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1290;
+        background: rgba(16, 12, 38, 0.36);
+      }
+
+      .global-menu-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1310;
+        width: min(320px, 86vw);
+        height: 100vh;
+        background: #fff;
+        border-right: 1px solid #ddd6fb;
+        box-shadow: 0 18px 36px rgba(24, 11, 63, 0.22);
+        padding: 14px;
+        transform: translateX(-105%);
+        transition: transform 180ms ease;
+      }
+
+      .global-menu-drawer.open {
+        transform: translateX(0);
+      }
+
+      .global-menu-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .global-menu-head h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: #28196d;
+      }
+
+      .global-menu-close {
+        border: 1px solid #d7cff7;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        border-radius: 10px;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+      }
+
+      .global-menu-links {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .global-menu-links a {
+        text-decoration: none;
+        color: #2f2c4c;
+        font-weight: 600;
+        border: 1px solid #ddd7f8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: #fcfbff;
+      }
+
+      .global-menu-links a.active {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      @media (max-width: 880px) {
+        .score-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .app {
+          width: min(96vw, 760px);
+          margin-top: 14px;
+        }
+
+        .topbar,
+        .section {
+          padding: 14px;
+          border-radius: 14px;
+        }
+
+        .stage-nav,
+        .stage-tabs,
+        .stage-move,
+        .section-actions,
+        .resource-row {
+          flex-direction: column;
+        }
+
+        .btn,
+        .stage-tab {
+          width: 100%;
+        }
+      }
+
+      @media print {
+        .no-print,
+        #introSection,
+        #stageNav,
+        #fase1Section,
+        #fase2Section,
+        #fase3Section,
+        #fase4Section,
+        #fase5Section,
+        #topResetBtn,
+        .topbar-actions {
+          display: none !important;
+        }
+
+        body {
+          background: #fff;
+        }
+
+        .app {
+          width: 100%;
+          margin: 0;
+        }
+
+        .card,
+        .summary-source {
+          border: 1px solid #cfcfcf;
+          box-shadow: none;
+        }
+
+        #summarySection {
+          display: block !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="globalMenuBtn" class="global-menu-btn no-print" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <div id="globalMenuBackdrop" class="global-menu-backdrop hidden no-print"></div>
+    <nav id="globalMenuDrawer" class="global-menu-drawer hidden no-print" aria-label="Projectmenu">
+      <div class="global-menu-head">
+        <h2>Mijn schermen en ik</h2>
+        <button id="globalMenuCloseBtn" class="global-menu-close" type="button" aria-label="Sluit menu">✕</button>
+      </div>
+      <div class="global-menu-links">
+        <a href="../index.html">Startpagina</a>
+        <a href="../imec_reflectiedashboard/imec.html">imec reflectiedashboard</a>
+        <a href="../mijn_schermen_en_ik_video_prevragen/index.html">Video-opdracht</a>
+        <a href="../mijn_schermen_en_ik_vrt_leesopdracht/index.html">Leesopdracht</a>
+        <a class="active" href="index.html">Posteropdracht</a>
+      </div>
+    </nav>
+    <main class="app">
+      <header class="topbar card">
+        <div class="topbar-row">
+          <div>
+            <h1>Ontwerp jouw poster</h1>
+            <p class="subtitle">Je bouwt 5 concrete acties en zet ze klaar voor je Canva-poster.</p>
+          </div>
+          <div class="topbar-actions no-print">
+            <span id="storageStatus" class="status-pill" aria-live="polite">Autosave actief</span>
+            <button id="topResetBtn" type="button" class="btn btn-secondary">Reset alles</button>
+          </div>
+        </div>
+        <div class="progress-wrap" aria-label="Voortgang">
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressText" class="progress-text">Voortgang: 0%</p>
+        </div>
+      </header>
+
+      <section id="stageNav" class="card stage-nav hidden no-print" aria-label="Fase-navigatie">
+        <div id="stageTabs" class="stage-tabs" role="tablist" aria-label="Fases"></div>
+        <div class="stage-move">
+          <button id="prevStageBtn" type="button" class="btn btn-secondary">Vorige fase</button>
+          <button id="nextStageBtn" type="button" class="btn btn-primary">Volgende fase</button>
+        </div>
+      </section>
+
+      <section id="introSection" class="section card">
+        <div class="section-head">
+          <h2>Start</h2>
+        </div>
+        <p class="instruction">Eerst verzamel je inhoud, daarna pas maak je je poster in Canva.</p>
+        <div class="section-actions no-print">
+          <button id="startBtn" type="button" class="btn btn-primary">Start</button>
+        </div>
+      </section>
+
+      <section id="fase1Section" class="section card hidden">
+        <div class="section-head">
+          <h2>Fase 1 - Wat weet ik al?</h2>
+          <button id="fase1HelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="fase1HelpBox">?</button>
+        </div>
+        <p class="instruction">Haal kort 4 inzichten op uit eerdere lessen.</p>
+        <p id="fase1HelpBox" class="help-box hidden">Gebruik je eerdere antwoorden als startpunt. Korte, duidelijke zinnen volstaan.</p>
+
+        <div class="resource-row">
+          <a class="link-btn" href="../imec_reflectiedashboard/imec.html">Open imec-reflectiedashboard</a>
+          <a class="link-btn" href="../mijn_schermen_en_ik_video_prevragen/index.html">Open video-opdracht</a>
+          <a class="link-btn" href="../mijn_schermen_en_ik_vrt_leesopdracht/index.html">Open leesopdracht</a>
+        </div>
+
+        <div class="question-list">
+          <article class="q-card">
+            <label class="q-label" for="back_habit">In welke situatie grijp ik het vaakst zonder nadenken naar mijn smartphone of laptop? (bijv. tijdens huiswerk, voor het slapengaan, bij verveling)</label>
+            <textarea id="back_habit" class="short-text" maxlength="180"></textarea>
+            <p class="counter" id="back_habit_counter">0/180</p>
+          </article>
+          <article class="q-card">
+            <div class="q-label-row">
+              <label class="q-label" for="back_imec">Kies 1 cijfer uit het imec-dashboard dat je opvallend vond. Wat betekent dat cijfer volgens jou?</label>
+              <button
+                id="back_imec_help_btn"
+                type="button"
+                class="q-help-btn no-print"
+                aria-expanded="false"
+                aria-controls="back_imec_help_box"
+                aria-label="Toelichting bij imec-vraag"
+              >
+                ?
+              </button>
+            </div>
+            <p id="back_imec_help_box" class="q-help-box hidden">Gebruik dit schema: "Ik kies cijfer ... Dit betekent volgens mij ...".</p>
+            <textarea id="back_imec" class="short-text" maxlength="180"></textarea>
+            <p class="counter" id="back_imec_counter">0/180</p>
+          </article>
+          <article class="q-card">
+            <div class="q-label-row">
+              <label class="q-label" for="back_video">Welk moment uit de video herken jij het meest? Leg kort uit waarom.</label>
+              <button
+                id="back_video_help_btn"
+                type="button"
+                class="q-help-btn no-print"
+                aria-expanded="false"
+                aria-controls="back_video_help_box"
+                aria-label="Toelichting bij videovraag"
+              >
+                ?
+              </button>
+            </div>
+            <p id="back_video_help_box" class="q-help-box hidden">Denk aan: moeite met stoppen, algoritme, slaap of druk in de groep.</p>
+            <textarea id="back_video" class="short-text" maxlength="180"></textarea>
+            <p class="counter" id="back_video_counter">0/180</p>
+          </article>
+          <article class="q-card">
+            <div class="q-label-row">
+              <label class="q-label" for="back_reading">Wat leerde je uit de leesopdracht dat jou helpt om "digibesitas" of "digitale prikkels" beter te begrijpen?</label>
+              <button
+                id="back_reading_help_btn"
+                type="button"
+                class="q-help-btn no-print"
+                aria-expanded="false"
+                aria-controls="back_reading_help_box"
+                aria-label="Toelichting bij leesvraag"
+              >
+                ?
+              </button>
+            </div>
+            <p id="back_reading_help_box" class="q-help-box hidden">Begin zo: "In de tekst leerde ik dat ... Dat is belangrijk omdat ...".</p>
+            <textarea id="back_reading" class="short-text" maxlength="180"></textarea>
+            <p class="counter" id="back_reading_counter">0/180</p>
+          </article>
+        </div>
+
+        <div class="section-actions no-print">
+          <button id="toFase2Btn" type="button" class="btn btn-primary" disabled>Ga naar fase 2</button>
+        </div>
+      </section>
+
+      <section id="fase2Section" class="section card hidden">
+        <div class="section-head">
+          <h2>Fase 2 - Vier concrete acties uit de les</h2>
+          <button id="fase2HelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="fase2HelpBox">?</button>
+        </div>
+        <p class="instruction">In deze stap verzamel je 4 concrete acties. Gebruik telkens dit schema: Wanneer, Waar, Hoe vaak.</p>
+        <p id="fase2HelpBox" class="help-box hidden">Actie 1 komt uit je eigen gewoonte. Actie 2 komt uit imec. Actie 3 komt uit de video. Actie 4 komt uit de leestekst. Gebruik bij elke actie dit schema: Wanneer, Waar, Hoe vaak. Actie 5 via online bron volgt pas in fase 3.</p>
+
+        <div id="actionCards" class="action-grid"></div>
+        <p id="phase2Status" class="warning-text"></p>
+        <ul id="phase2BarrierList" class="phase-status-list"></ul>
+
+        <div class="section-actions no-print">
+          <button id="toFase3Btn" type="button" class="btn btn-primary" disabled>Ga naar nieuwe bron</button>
+        </div>
+      </section>
+
+      <section id="fase3Section" class="section card hidden">
+        <div class="section-head">
+          <h2>Fase 3 - Zoek één nieuwe actie</h2>
+          <button id="fase3HelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="fase3HelpBox">?</button>
+        </div>
+        <p class="instruction">Nu maak je actie 5: zoek online 1 extra actie en noteer bron, uitleg, inspanning en impact.</p>
+        <p id="fase3HelpBox" class="help-box hidden">Deze online actie wordt automatisch je actie 5 in de ranking.</p>
+
+        <article class="research-card">
+          <label class="q-label" for="search_query">Welke zoekopdracht gebruikte ik?</label>
+          <input id="search_query" class="text-input" type="text" maxlength="120" />
+          <div class="chip-row">
+            <button type="button" class="chip search-chip" data-query="hoe smartphonegebruik beperken tijdens huiswerk">Voorbeeld 1</button>
+            <button type="button" class="chip search-chip" data-query="tips minder schermtijd slapen jongeren">Voorbeeld 2</button>
+            <button type="button" class="chip search-chip" data-query="hoe meldingen verminderen smartphone focus">Voorbeeld 3</button>
+            <button type="button" class="chip search-chip" data-query="screen time habits students focus smartphone">Voorbeeld 4</button>
+          </div>
+        </article>
+
+        <article class="research-card">
+          <label class="q-label" for="source_name">Bronnaam</label>
+          <input id="source_name" class="text-input" type="text" maxlength="100" />
+          <label class="q-label" for="source_url" style="margin-top: 8px; display: block">Website of URL</label>
+          <input id="source_url" class="text-input" type="text" maxlength="180" />
+        </article>
+
+        <article class="research-card">
+          <label class="q-label" for="gevonden_actie">Welke nieuwe actie haal ik uit die bron? (in eigen woorden)</label>
+          <textarea id="gevonden_actie" class="short-text" maxlength="180"></textarea>
+          <p class="counter" id="gevonden_actie_counter">0/180</p>
+          <label class="q-label" for="waarom_bruikbaar" style="margin-top: 8px; display: block">Waarom lijkt deze bron bruikbaar?</label>
+          <textarea id="waarom_bruikbaar" class="short-text" maxlength="180"></textarea>
+          <p class="counter" id="waarom_bruikbaar_counter">0/180</p>
+          <div class="score-grid">
+            <div>
+              <label class="q-label" for="actie_5_inspanning">Inspanning van actie 5 (1-5)</label>
+              <select id="actie_5_inspanning" class="select-input">
+                <option value="">Kies score</option>
+                <option value="1">1 - heel weinig moeite</option>
+                <option value="2">2 - weinig moeite</option>
+                <option value="3">3 - redelijke moeite</option>
+                <option value="4">4 - veel moeite</option>
+                <option value="5">5 - heel veel moeite</option>
+              </select>
+            </div>
+            <div>
+              <label class="q-label" for="actie_5_impact">Impact van actie 5 (1-5)</label>
+              <select id="actie_5_impact" class="select-input">
+                <option value="">Kies score</option>
+                <option value="1">1 - klein verschil</option>
+                <option value="2">2 - eerder klein</option>
+                <option value="3">3 - matig verschil</option>
+                <option value="4">4 - groot verschil</option>
+                <option value="5">5 - heel groot verschil</option>
+              </select>
+            </div>
+          </div>
+        </article>
+
+        <div class="section-actions no-print">
+          <button id="toFase4Btn" type="button" class="btn btn-primary" disabled>Ga naar ranking</button>
+        </div>
+      </section>
+
+      <section id="fase4Section" class="section card hidden">
+        <div class="section-head">
+          <h2>Fase 4 - Wat is makkelijk, wat heeft veel effect?</h2>
+          <button id="fase4HelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="fase4HelpBox">?</button>
+        </div>
+        <p class="instruction">Zet je acties in volgorde van laagdrempelig naar ingrijpender.</p>
+        <p id="fase4HelpBox" class="help-box hidden">Gebruik inspanning en impact samen om je volgorde te bepalen.</p>
+
+        <article class="ranking-card">
+          <h3>Rangschik je 5 acties</h3>
+          <div class="ranking-table-wrap">
+            <table class="ranking-table" aria-label="Ranking van acties">
+              <thead>
+                <tr>
+                  <th>Actie</th>
+                  <th>Inspanning</th>
+                  <th>Impact</th>
+                  <th>Positie op poster (1-5)</th>
+                </tr>
+              </thead>
+              <tbody id="rankingTableBody"></tbody>
+            </table>
+          </div>
+          <p id="rankingStatus" class="warning-text"></p>
+        </article>
+
+        <article class="ranking-card">
+          <label class="q-label" for="rank_easy">Welke actie is het makkelijkst om morgen al te doen?</label>
+          <textarea id="rank_easy" class="short-text" maxlength="140"></textarea>
+          <p class="counter" id="rank_easy_counter">0/140</p>
+
+          <label class="q-label" for="rank_effect" style="margin-top: 8px; display: block">Welke actie heeft volgens jou het meeste effect?</label>
+          <textarea id="rank_effect" class="short-text" maxlength="140"></textarea>
+          <p class="counter" id="rank_effect_counter">0/140</p>
+
+          <label class="q-label" for="rank_discipline" style="margin-top: 8px; display: block">Welke actie vraagt het meeste discipline?</label>
+          <textarea id="rank_discipline" class="short-text" maxlength="140"></textarea>
+          <p class="counter" id="rank_discipline_counter">0/140</p>
+
+          <label class="q-label" for="rank_hold" style="margin-top: 8px; display: block">Welke actie kan jij het langst volhouden?</label>
+          <textarea id="rank_hold" class="short-text" maxlength="140"></textarea>
+          <p class="counter" id="rank_hold_counter">0/140</p>
+        </article>
+
+        <div class="section-actions no-print">
+          <button id="toFase5Btn" type="button" class="btn btn-primary" disabled>Ga naar Canva-voorbereiding</button>
+        </div>
+      </section>
+
+      <section id="fase5Section" class="section card hidden">
+        <div class="section-head">
+          <h2>Fase 5 - Maak je posterplan</h2>
+          <button id="fase5HelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="fase5HelpBox">?</button>
+        </div>
+        <p class="instruction">Leg je titel, visuele volgorde en focus vast voor Canva.</p>
+        <p id="fase5HelpBox" class="help-box hidden">Ga pas naar Canva wanneer deze fase volledig klaar is.</p>
+
+        <article class="poster-card">
+          <label class="q-label" for="poster_title">Welke titel geef ik mijn poster?</label>
+          <input id="poster_title" class="text-input" type="text" maxlength="90" />
+          <div class="chip-row">
+            <button type="button" class="chip title-chip" data-title="5 stappen naar meer controle over mijn schermtijd">Titelvoorstel 1</button>
+            <button type="button" class="chip title-chip" data-title="Mijn 5 acties voor minder afleiding">Titelvoorstel 2</button>
+            <button type="button" class="chip title-chip" data-title="Van kleine stap naar groot verschil">Titelvoorstel 3</button>
+          </div>
+        </article>
+
+        <article class="poster-card">
+          <label class="q-label" for="poster_visual_order">Hoe maak ik de volgorde visueel duidelijk?</label>
+          <textarea id="poster_visual_order" class="short-text" maxlength="180"></textarea>
+          <p class="counter" id="poster_visual_order_counter">0/180</p>
+
+          <label class="q-label" for="poster_highlight_action" style="margin-top: 8px; display: block">Welke actie wil ik het meest laten opvallen?</label>
+          <select id="poster_highlight_action" class="select-input">
+            <option value="">Kies een actie</option>
+          </select>
+        </article>
+
+        <article class="poster-card">
+          <h3>Poster-checklist</h3>
+          <div class="checklist">
+            <label class="check-item"><input id="check_title" type="checkbox" /> Duidelijke titel staat klaar</label>
+            <label class="check-item"><input id="check_five_actions" type="checkbox" /> 5 concrete acties zijn ingevuld</label>
+            <label class="check-item"><input id="check_order" type="checkbox" /> Rangorde van 1 tot 5 is gekozen</label>
+            <label class="check-item"><input id="check_effort" type="checkbox" /> Bij elke actie koos ik een inspanningsscore (1 = weinig moeite, 5 = veel moeite)</label>
+            <label class="check-item"><input id="check_impact" type="checkbox" /> Bij elke actie koos ik een impactscore (1 = klein effect, 5 = groot effect)</label>
+            <label class="check-item"><input id="check_online_action" type="checkbox" /> 1 online gevonden actie zit in de lijst</label>
+            <label class="check-item"><input id="check_online_source" type="checkbox" /> Bronvermelding voor die actie staat genoteerd</label>
+          </div>
+        </article>
+
+        <div class="section-actions no-print">
+          <button id="toSummaryBtn" type="button" class="btn btn-primary" disabled>Bekijk mijn eindoverzicht</button>
+        </div>
+      </section>
+
+      <section id="summarySection" class="section card hidden">
+        <h2>Eindoverzicht voor Canva</h2>
+        <p class="instruction">Deze inhoud kan je rechtstreeks gebruiken in je poster.</p>
+
+        <div class="summary-source">
+          <div class="summary-head">
+            <h3>Posterinhoud - 5 acties</h3>
+            <p id="summaryReadiness">Status: nog niet volledig klaar.</p>
+          </div>
+
+          <div id="summaryGrid" class="summary-grid"></div>
+
+          <article class="summary-card">
+            <h3>Bron van de zelfgevonden actie</h3>
+            <ul class="summary-list" id="summarySourceList"></ul>
+          </article>
+
+          <article class="summary-card">
+            <h3>Reflectie voor je poster</h3>
+            <ul class="summary-list" id="summaryReflectionList"></ul>
+          </article>
+        </div>
+
+        <div class="section-actions no-print">
+          <button id="copyPlanBtn" type="button" class="btn btn-primary">Kopieer posterplan</button>
+          <button id="summaryResetBtn" type="button" class="btn btn-secondary">Reset alles</button>
+        </div>
+      </section>
+
+      <footer class="site-footer">© Robbe Wulgaert · AI in de Klas · aiindeklas.be / robbewulgaert.be</footer>
+    </main>
+
+    <script>
+      const APP_CONFIG = {
+        storageKey: "posteropdracht_schermtijd_acties_state_v1"
+      };
+
+      const PHASES = [
+        { id: "fase1", label: "1. Terugblik" },
+        { id: "fase2", label: "2. 4 acties uit de les" },
+        { id: "fase3", label: "3. Nieuwe bron" },
+        { id: "fase4", label: "4. Ranking" },
+        { id: "fase5", label: "5. Canva-plan" },
+        { id: "summary", label: "Overzicht" }
+      ];
+
+      const ACTION_CATEGORIES = [
+        {
+          id: "actie_1",
+          label: "Actie die ik al soms doe",
+          focusLine: "Kies iets dat je nu al af en toe doet."
+        },
+        {
+          id: "actie_2",
+          label: "Actie met een imec-cijfer",
+          focusLine: "Gebruik 1 cijfer uit je imec-dashboard (meldingen, slaap/focus, afhankelijkheid of regels)."
+        },
+        {
+          id: "actie_3",
+          label: "Actie uit de video-oefening",
+          focusLine: "Gebruik 1 moment uit de video-opdracht dat je herkende."
+        },
+        {
+          id: "actie_4",
+          label: "Actie uit de leestekst",
+          focusLine: "Gebruik 1 idee uit de leestekst (digibesitas, slaap, prikkels of checkinggedrag)."
+        }
+      ];
+
+      const SCORE_LABELS = {
+        "1": "1 - heel weinig / klein",
+        "2": "2 - weinig / eerder klein",
+        "3": "3 - redelijk / matig",
+        "4": "4 - veel / groot",
+        "5": "5 - heel veel / heel groot"
+      };
+
+      const defaultState = {
+        started: false,
+        activePhase: "intro",
+        answers: {}
+      };
+
+      let state = loadState();
+
+      const refs = {
+        stageNav: document.getElementById("stageNav"),
+        stageTabs: document.getElementById("stageTabs"),
+        prevStageBtn: document.getElementById("prevStageBtn"),
+        nextStageBtn: document.getElementById("nextStageBtn"),
+        storageStatus: document.getElementById("storageStatus"),
+        progressFill: document.getElementById("progressFill"),
+        progressText: document.getElementById("progressText"),
+        startBtn: document.getElementById("startBtn"),
+        topResetBtn: document.getElementById("topResetBtn"),
+        summaryResetBtn: document.getElementById("summaryResetBtn"),
+        introSection: document.getElementById("introSection"),
+        fase1Section: document.getElementById("fase1Section"),
+        fase2Section: document.getElementById("fase2Section"),
+        fase3Section: document.getElementById("fase3Section"),
+        fase4Section: document.getElementById("fase4Section"),
+        fase5Section: document.getElementById("fase5Section"),
+        summarySection: document.getElementById("summarySection"),
+        toFase2Btn: document.getElementById("toFase2Btn"),
+        toFase3Btn: document.getElementById("toFase3Btn"),
+        toFase4Btn: document.getElementById("toFase4Btn"),
+        toFase5Btn: document.getElementById("toFase5Btn"),
+        toSummaryBtn: document.getElementById("toSummaryBtn"),
+        copyPlanBtn: document.getElementById("copyPlanBtn"),
+        actionCards: document.getElementById("actionCards"),
+        rankingTableBody: document.getElementById("rankingTableBody"),
+        rankingStatus: document.getElementById("rankingStatus"),
+        phase2Status: document.getElementById("phase2Status"),
+        phase2BarrierList: document.getElementById("phase2BarrierList"),
+        posterHighlightAction: document.getElementById("poster_highlight_action"),
+        summaryGrid: document.getElementById("summaryGrid"),
+        summarySourceList: document.getElementById("summarySourceList"),
+        summaryReflectionList: document.getElementById("summaryReflectionList"),
+        summaryReadiness: document.getElementById("summaryReadiness")
+      };
+
+      const textAreaIds = [
+        "back_habit",
+        "back_imec",
+        "back_video",
+        "back_reading",
+        "gevonden_actie",
+        "waarom_bruikbaar",
+        "rank_easy",
+        "rank_effect",
+        "rank_discipline",
+        "rank_hold",
+        "poster_visual_order"
+      ];
+
+      const textInputIds = ["search_query", "source_name", "source_url", "poster_title"];
+      const staticSelectIds = ["actie_5_inspanning", "actie_5_impact"];
+
+      init();
+
+      function init() {
+        renderActionCards();
+        renderRankingTable();
+        renderStageTabs();
+        bindStaticInputs();
+        bindButtons();
+        bindHelpToggles();
+        bindChips();
+        syncAllCounters();
+        renderActionDependentViews();
+        syncVisibility();
+        updateButtons();
+        updateProgress();
+        updateStorageStatus("Sessie hersteld.");
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(APP_CONFIG.storageKey);
+        if (!raw) return { ...defaultState, answers: {} };
+        try {
+          const parsed = JSON.parse(raw);
+          return {
+            ...defaultState,
+            ...parsed,
+            answers: { ...(parsed.answers || {}) }
+          };
+        } catch (error) {
+          return { ...defaultState, answers: {} };
+        }
+      }
+
+      function saveState(reason) {
+        localStorage.setItem(APP_CONFIG.storageKey, JSON.stringify(state));
+        updateStorageStatus(reason || "Opgeslagen.");
+      }
+
+      function updateStorageStatus(message) {
+        const time = new Date().toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" });
+        refs.storageStatus.textContent = `${message} ${time}`;
+      }
+
+      function bindStaticInputs() {
+        textAreaIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.value = getAnswer(id);
+          el.addEventListener("input", () => {
+            setAnswer(id, el.value);
+            updateCounter(id, el.value.length, el.maxLength || 0);
+            handleAnswerUpdate();
+          });
+        });
+
+        textInputIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.value = getAnswer(id);
+          el.addEventListener("input", () => {
+            setAnswer(id, el.value);
+            handleAnswerUpdate();
+          });
+        });
+
+        staticSelectIds.forEach((id) => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.value = getAnswer(id);
+          el.addEventListener("change", () => {
+            setAnswer(id, el.value);
+            handleAnswerUpdate();
+          });
+        });
+
+        [
+          "check_title",
+          "check_five_actions",
+          "check_order",
+          "check_effort",
+          "check_impact",
+          "check_online_action",
+          "check_online_source"
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          el.checked = getAnswer(id) === "true";
+          el.addEventListener("change", () => {
+            setAnswer(id, el.checked ? "true" : "false");
+            handleAnswerUpdate();
+          });
+        });
+
+        refs.posterHighlightAction.addEventListener("change", () => {
+          setAnswer("poster_highlight_action", refs.posterHighlightAction.value);
+          handleAnswerUpdate();
+        });
+      }
+
+      function bindButtons() {
+        refs.startBtn.addEventListener("click", () => {
+          state.started = true;
+          state.activePhase = "fase1";
+          saveState("Start bewaard om");
+          syncVisibility();
+          updateButtons();
+          updateProgress();
+        });
+
+        refs.toFase2Btn.addEventListener("click", () => goToPhase("fase2"));
+        refs.toFase3Btn.addEventListener("click", () => goToPhase("fase3"));
+        refs.toFase4Btn.addEventListener("click", () => goToPhase("fase4"));
+        refs.toFase5Btn.addEventListener("click", () => goToPhase("fase5"));
+        refs.toSummaryBtn.addEventListener("click", () => goToPhase("summary"));
+
+        refs.prevStageBtn.addEventListener("click", () => moveStage(-1));
+        refs.nextStageBtn.addEventListener("click", () => moveStage(1));
+
+        refs.topResetBtn.addEventListener("click", resetAll);
+        refs.summaryResetBtn.addEventListener("click", resetAll);
+
+        refs.copyPlanBtn.addEventListener("click", async () => {
+          const text = buildPosterPlanText();
+          try {
+            await navigator.clipboard.writeText(text);
+            refs.copyPlanBtn.textContent = "Gekopieerd";
+            setTimeout(() => {
+              refs.copyPlanBtn.textContent = "Kopieer posterplan";
+            }, 1400);
+          } catch (error) {
+            refs.copyPlanBtn.textContent = "Kopieren mislukt";
+            setTimeout(() => {
+              refs.copyPlanBtn.textContent = "Kopieer posterplan";
+            }, 1400);
+          }
+        });
+
+      }
+
+      function bindHelpToggles() {
+        ["fase1", "fase2", "fase3", "fase4", "fase5"].forEach((phase) => {
+          const btn = document.getElementById(`${phase}HelpBtn`);
+          const box = document.getElementById(`${phase}HelpBox`);
+          btn.addEventListener("click", () => {
+            const open = !box.classList.contains("hidden");
+            box.classList.toggle("hidden", open);
+            btn.setAttribute("aria-expanded", String(!open));
+          });
+        });
+
+        [
+          ["back_imec_help_btn", "back_imec_help_box"],
+          ["back_video_help_btn", "back_video_help_box"],
+          ["back_reading_help_btn", "back_reading_help_box"]
+        ].forEach(([btnId, boxId]) => {
+          const btn = document.getElementById(btnId);
+          const box = document.getElementById(boxId);
+          if (!btn || !box) return;
+          btn.addEventListener("click", () => {
+            const open = !box.classList.contains("hidden");
+            box.classList.toggle("hidden", open);
+            btn.setAttribute("aria-expanded", String(!open));
+          });
+        });
+      }
+
+      function bindChips() {
+        document.querySelectorAll(".search-chip").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const value = chip.getAttribute("data-query") || "";
+            document.getElementById("search_query").value = value;
+            setAnswer("search_query", value);
+            handleAnswerUpdate();
+          });
+        });
+
+        document.querySelectorAll(".title-chip").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const value = chip.getAttribute("data-title") || "";
+            document.getElementById("poster_title").value = value;
+            setAnswer("poster_title", value);
+            handleAnswerUpdate();
+          });
+        });
+      }
+
+      function renderActionCards() {
+        refs.actionCards.innerHTML = "";
+        ACTION_CATEGORIES.forEach((category, index) => {
+          const id = category.id;
+          const card = document.createElement("article");
+          card.className = "action-card";
+          card.innerHTML = `
+            <h3>Actie ${index + 1}: ${escapeHtml(category.label)}</h3>
+            <p class="action-focus">${escapeHtml(category.focusLine)}</p>
+
+            <label class="q-label" for="${id}_titel">Actie-titel</label>
+            <input id="${id}_titel" class="text-input" type="text" maxlength="70" />
+
+            <label class="q-label" for="${id}_uitleg" style="margin-top:8px; display:block">Korte uitleg (concreet gedrag)</label>
+            <textarea
+              id="${id}_uitleg"
+              class="short-text"
+              maxlength="220"
+              placeholder="Wanneer: ...&#10;Waar: ...&#10;Hoe vaak: ..."
+            ></textarea>
+            <p class="action-scaffold">Schrijf 3 korte lijnen: Wanneer, Waar, Hoe vaak.</p>
+            <p class="counter" id="${id}_uitleg_counter">0/220</p>
+
+            <div class="score-grid">
+              <div>
+                <label class="q-label" for="${id}_inspanning">Inspanning (1-5)</label>
+                <select id="${id}_inspanning" class="select-input">
+                  <option value="">Kies score</option>
+                  <option value="1">1 - heel weinig moeite</option>
+                  <option value="2">2 - weinig moeite</option>
+                  <option value="3">3 - redelijke moeite</option>
+                  <option value="4">4 - veel moeite</option>
+                  <option value="5">5 - heel veel moeite</option>
+                </select>
+              </div>
+              <div>
+                <label class="q-label" for="${id}_impact">Impact (1-5)</label>
+                <select id="${id}_impact" class="select-input">
+                  <option value="">Kies score</option>
+                  <option value="1">1 - klein verschil</option>
+                  <option value="2">2 - eerder klein</option>
+                  <option value="3">3 - matig verschil</option>
+                  <option value="4">4 - groot verschil</option>
+                  <option value="5">5 - heel groot verschil</option>
+                </select>
+              </div>
+            </div>
+
+            <p id="${id}_concrete_feedback" class="warning-text"></p>
+          `;
+          refs.actionCards.appendChild(card);
+        });
+
+        ACTION_CATEGORIES.forEach((category) => {
+          const id = category.id;
+          bindActionInput(`${id}_titel`, "input");
+          bindActionInput(`${id}_uitleg`, "input");
+          bindActionInput(`${id}_inspanning`, "change");
+          bindActionInput(`${id}_impact`, "change");
+        });
+
+        rerenderActionFields();
+      }
+
+      function bindActionInput(id, eventName) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener(eventName, () => {
+          setAnswer(id, el.value);
+          if (id.endsWith("_uitleg")) {
+            updateCounter(id, el.value.length, el.maxLength || 0);
+          }
+          renderActionDependentViews();
+          handleAnswerUpdate();
+        });
+      }
+
+      function rerenderActionFields() {
+        ACTION_CATEGORIES.forEach((category) => {
+          const id = category.id;
+          setInputValue(`${id}_titel`, getAnswer(`${id}_titel`));
+          setInputValue(`${id}_uitleg`, getAnswer(`${id}_uitleg`));
+          setInputValue(`${id}_inspanning`, getAnswer(`${id}_inspanning`));
+          setInputValue(`${id}_impact`, getAnswer(`${id}_impact`));
+
+          updateCounter(`${id}_uitleg`, getAnswer(`${id}_uitleg`).length, 220);
+          renderConcreteFeedback(id);
+        });
+      }
+
+      function renderRankingTable() {
+        const rankingActions = getAllActionsForRanking();
+        refs.rankingTableBody.innerHTML = "";
+        rankingActions.forEach((action, index) => {
+          const row = document.createElement("tr");
+          const actionId = action.id;
+          const selectId = `${actionId}_order`;
+          const maxPos = rankingActions.length;
+          const options = Array.from({ length: maxPos }, (_, i) => `<option value="${i + 1}">${i + 1}</option>`).join("");
+          row.innerHTML = `
+            <td>
+              <strong>${index + 1}. ${escapeHtml(action.title || action.label)}</strong>
+            </td>
+            <td>${escapeHtml(scoreToLabel(action.inspanning, "inspanning"))}</td>
+            <td>${escapeHtml(scoreToLabel(action.impact, "impact"))}</td>
+            <td>
+              <select id="${selectId}" class="select-input">
+                <option value="">Kies positie</option>
+                ${options}
+              </select>
+            </td>
+          `;
+          refs.rankingTableBody.appendChild(row);
+
+          const select = document.getElementById(selectId);
+          select.value = getAnswer(selectId);
+          select.addEventListener("change", () => {
+            setAnswer(selectId, select.value);
+            renderRankingStatus();
+            handleAnswerUpdate();
+          });
+        });
+
+        renderRankingStatus();
+      }
+
+      function renderRankingStatus() {
+        const rankingActions = getAllActionsForRanking();
+        const values = rankingActions.map((action) => getAnswer(`${action.id}_order`)).filter(Boolean);
+        const unique = new Set(values);
+        if (values.length === 0) {
+          refs.rankingStatus.textContent = `Kies voor elke actie een positie van 1 tot ${rankingActions.length}.`;
+          return;
+        }
+        if (unique.size !== values.length) {
+          refs.rankingStatus.textContent = "Elke positie mag maar 1 keer gebruikt worden.";
+          return;
+        }
+        if (values.length < rankingActions.length) {
+          refs.rankingStatus.textContent = "Nog niet alle acties hebben een positie.";
+          return;
+        }
+
+        const mismatch = countRankingMismatch();
+        if (mismatch >= 3) {
+          refs.rankingStatus.textContent = "Controleer je volgorde: laagdrempelig hoort eerder bovenaan.";
+        } else {
+          refs.rankingStatus.textContent = "Je ranking is ingevuld.";
+        }
+      }
+
+      function countRankingMismatch() {
+        const expected = getAllActionsForRanking().map((action) => {
+          const effort = Number(action.inspanning || "0");
+          const impact = Number(action.impact || "0");
+          return { id: action.id, score: effort + impact };
+        }).sort((a, b) => a.score - b.score);
+
+        let mismatch = 0;
+        expected.forEach((item, index) => {
+          const chosen = Number(getAnswer(`${item.id}_order`) || "0");
+          if (chosen !== index + 1) mismatch += 1;
+        });
+        return mismatch;
+      }
+
+      function renderActionDependentViews() {
+        renderConcreteFeedbackAll();
+        renderPhase2BarrierList();
+        renderRankingTable();
+        renderPosterHighlightOptions();
+        renderSummary();
+      }
+
+      function renderConcreteFeedbackAll() {
+        ACTION_CATEGORIES.forEach((category) => renderConcreteFeedback(category.id));
+      }
+
+      function renderConcreteFeedback(actionId) {
+        const feedback = document.getElementById(`${actionId}_concrete_feedback`);
+        const state = getActionBarrierState(actionId);
+
+        if (!state.hasStarted) {
+          feedback.textContent = "";
+          return;
+        }
+
+        if (state.ready) {
+          feedback.className = "ok-text";
+          feedback.textContent = "Klaar: deze actie is volledig en concreet.";
+        } else {
+          feedback.className = "warning-text";
+          feedback.textContent = `Nog nodig: ${state.missing.join(", ")}.`;
+        }
+      }
+
+      function getActionBarrierState(actionId) {
+        const title = getAnswer(`${actionId}_titel`).trim();
+        const uitleg = getAnswer(`${actionId}_uitleg`).trim();
+        const inspanning = getAnswer(`${actionId}_inspanning`).trim();
+        const impact = getAnswer(`${actionId}_impact`).trim();
+        const missing = [];
+        const formatStatus = getWwhFormatStatus(uitleg);
+
+        if (!title) missing.push("actie-titel");
+        if (!uitleg) {
+          missing.push("3 lijnen invullen: Wanneer, Waar, Hoe vaak");
+        } else {
+          if (!formatStatus.hasWanneer) missing.push("lijn 'Wanneer'");
+          if (!formatStatus.hasWaar) missing.push("lijn 'Waar'");
+          if (!formatStatus.hasHoeVaak) missing.push("lijn 'Hoe vaak'");
+        }
+        if (!inspanning) missing.push("inspanning-score");
+        if (!impact) missing.push("impact-score");
+
+        const hasContentForConcreteCheck = Boolean(title || uitleg);
+        const hasFormatComplete = formatStatus.hasWanneer && formatStatus.hasWaar && formatStatus.hasHoeVaak;
+        if (hasContentForConcreteCheck && hasFormatComplete && !isConcreteAction(title, uitleg)) {
+          missing.push("maak je actie concreter met tijd of frequentie");
+        }
+
+        return {
+          hasStarted: hasContentForConcreteCheck || Boolean(inspanning) || Boolean(impact),
+          missing,
+          ready: missing.length === 0
+        };
+      }
+
+      function getWwhFormatStatus(uitleg) {
+        const text = (uitleg || "").toLowerCase();
+        return {
+          hasWanneer: /\bwanneer\b/.test(text),
+          hasWaar: /\bwaar\b/.test(text),
+          hasHoeVaak: /\bhoe\s*vaak\b/.test(text)
+        };
+      }
+
+      function renderPhase2BarrierList() {
+        if (!refs.phase2BarrierList) return;
+        refs.phase2BarrierList.innerHTML = "";
+        ACTION_CATEGORIES.forEach((category, index) => {
+          const state = getActionBarrierState(category.id);
+          const li = document.createElement("li");
+          if (state.ready) {
+            li.className = "done";
+            li.textContent = `Actie ${index + 1}: klaar`;
+          } else if (!state.hasStarted) {
+            li.textContent = `Actie ${index + 1}: start met titel en korte uitleg`;
+          } else {
+            li.textContent = `Actie ${index + 1}: nog nodig - ${state.missing.join(", ")}`;
+          }
+          refs.phase2BarrierList.appendChild(li);
+        });
+      }
+
+      function isConcreteAction(title, uitleg) {
+        const text = `${title} ${uitleg}`.toLowerCase();
+        const formatStatus = getWwhFormatStatus(uitleg);
+        const hasRequiredFormat = formatStatus.hasWanneer && formatStatus.hasWaar && formatStatus.hasHoeVaak;
+        const cues = [
+          "tijdens",
+          "na ",
+          "voor ",
+          "uur",
+          "min",
+          "moment",
+          "meldingen",
+          "focus",
+          "niet storen",
+          "huiswerk",
+          "slaap",
+          "bed",
+          "keer",
+          "vast"
+        ];
+        const actionVerbs = ["zet", "leg", "open", "sluit", "gebruik", "check", "plan", "stop", "laat", "doe", "maak", "hou"];
+        const hasCue = cues.some((cue) => text.includes(cue));
+        const hasActionVerb = actionVerbs.some((verb) => text.includes(`${verb} `));
+        const hasDigit = /\d/.test(text);
+        return text.trim().length >= 30 && hasRequiredFormat && (hasCue || hasDigit || hasActionVerb);
+      }
+
+      function renderPosterHighlightOptions() {
+        const current = getAnswer("poster_highlight_action");
+        refs.posterHighlightAction.innerHTML = `<option value="">Kies een actie</option>`;
+        getAllActionsForRanking().forEach((action, index) => {
+          const option = document.createElement("option");
+          option.value = action.id;
+          option.textContent = `${index + 1}. ${action.title || action.label}`;
+          refs.posterHighlightAction.appendChild(option);
+        });
+        refs.posterHighlightAction.value = current;
+      }
+
+      function renderSummary() {
+        refs.summaryGrid.innerHTML = "";
+        const ordered = getOrderedActions();
+        ordered.forEach((item) => {
+          const card = document.createElement("article");
+          card.className = "summary-card";
+          card.innerHTML = `
+            <h3>Positie ${item.position} - ${escapeHtml(item.title)}</h3>
+            <ul class="summary-list">
+              <li><strong>Uitleg:</strong> ${escapeHtml(item.uitleg || "Nog niet ingevuld")}</li>
+              <li><strong>Inspanning:</strong> ${escapeHtml(scoreToLabel(item.inspanning, "inspanning"))}</li>
+              <li><strong>Impact:</strong> ${escapeHtml(scoreToLabel(item.impact, "impact"))}</li>
+            </ul>
+          `;
+          refs.summaryGrid.appendChild(card);
+        });
+
+        refs.summarySourceList.innerHTML = `
+          <li><strong>Zoekopdracht:</strong> ${escapeHtml(getAnswer("search_query") || "Nog niet ingevuld")}</li>
+          <li><strong>Bron:</strong> ${escapeHtml(getAnswer("source_name") || "Nog niet ingevuld")}</li>
+          <li><strong>Website/URL:</strong> ${escapeHtml(getAnswer("source_url") || "Nog niet ingevuld")}</li>
+          <li><strong>Gevonden actie:</strong> ${escapeHtml(getAnswer("gevonden_actie") || "Nog niet ingevuld")}</li>
+          <li><strong>Waarom bruikbaar:</strong> ${escapeHtml(getAnswer("waarom_bruikbaar") || "Nog niet ingevuld")}</li>
+        `;
+
+        refs.summaryReflectionList.innerHTML = `
+          <li><strong>Makkelijkst:</strong> ${escapeHtml(getAnswer("rank_easy") || "Nog niet ingevuld")}</li>
+          <li><strong>Meeste effect:</strong> ${escapeHtml(getAnswer("rank_effect") || "Nog niet ingevuld")}</li>
+          <li><strong>Meeste discipline:</strong> ${escapeHtml(getAnswer("rank_discipline") || "Nog niet ingevuld")}</li>
+          <li><strong>Langst vol te houden:</strong> ${escapeHtml(getAnswer("rank_hold") || "Nog niet ingevuld")}</li>
+          <li><strong>Postertitel:</strong> ${escapeHtml(getAnswer("poster_title") || "Nog niet ingevuld")}</li>
+          <li><strong>Visuele volgorde:</strong> ${escapeHtml(getAnswer("poster_visual_order") || "Nog niet ingevuld")}</li>
+        `;
+
+        refs.summaryReadiness.textContent = isSummaryReady()
+          ? "Status: klaar voor Canva."
+          : "Status: nog niet volledig klaar.";
+      }
+
+      function getOrderedActions() {
+        const raw = getAllActionsForRanking().map((action, index) => {
+          const position = Number(getAnswer(`${action.id}_order`) || "0") || index + 1;
+          return {
+            id: action.id,
+            position,
+            title: action.title || action.label,
+            uitleg: action.uitleg,
+            inspanning: action.inspanning,
+            impact: action.impact
+          };
+        });
+        return raw.sort((a, b) => a.position - b.position);
+      }
+
+      function buildPosterPlanText() {
+        const lines = [];
+        lines.push(`Postertitel: ${getAnswer("poster_title") || "Nog niet ingevuld"}`);
+        lines.push("");
+        lines.push("Acties op volgorde:");
+        getOrderedActions().forEach((item) => {
+          lines.push(`${item.position}. ${item.title} | inspanning ${item.inspanning || "-"} | impact ${item.impact || "-"}`);
+          lines.push(`   Uitleg: ${item.uitleg || "-"}`);
+        });
+        lines.push("");
+        lines.push(`Zoekopdracht: ${getAnswer("search_query") || "-"}`);
+        lines.push(`Bron: ${getAnswer("source_name") || "-"} (${getAnswer("source_url") || "-"})`);
+        lines.push(`Gevonden actie: ${getAnswer("gevonden_actie") || "-"}`);
+        lines.push("");
+        lines.push(`Visuele volgorde: ${getAnswer("poster_visual_order") || "-"}`);
+        lines.push(`Actie in de spotlight: ${getActionLabelById(getAnswer("poster_highlight_action")) || "-"}`);
+        return lines.join("\n");
+      }
+
+      function moveStage(direction) {
+        const visible = getVisiblePhases();
+        const index = visible.indexOf(state.activePhase);
+        const nextIndex = index + direction;
+        if (nextIndex < 0 || nextIndex >= visible.length) return;
+        goToPhase(visible[nextIndex]);
+      }
+
+      function goToPhase(phaseId) {
+        if (!isPhaseUnlocked(phaseId)) return;
+        state.activePhase = phaseId;
+        saveState("Fase gewijzigd om");
+        syncVisibility();
+        updateButtons();
+      }
+
+      function syncVisibility() {
+        normalizePhase();
+        refs.stageNav.classList.toggle("hidden", !state.started || state.activePhase === "intro");
+        refs.introSection.classList.toggle("hidden", state.activePhase !== "intro");
+        refs.fase1Section.classList.toggle("hidden", state.activePhase !== "fase1");
+        refs.fase2Section.classList.toggle("hidden", state.activePhase !== "fase2");
+        refs.fase3Section.classList.toggle("hidden", state.activePhase !== "fase3");
+        refs.fase4Section.classList.toggle("hidden", state.activePhase !== "fase4");
+        refs.fase5Section.classList.toggle("hidden", state.activePhase !== "fase5");
+        refs.summarySection.classList.toggle("hidden", state.activePhase !== "summary");
+      }
+
+      function normalizePhase() {
+        const valid = ["intro", ...PHASES.map((phase) => phase.id)];
+        if (!valid.includes(state.activePhase)) state.activePhase = state.started ? "fase1" : "intro";
+        if (!state.started) {
+          state.activePhase = "intro";
+          return;
+        }
+        if (state.activePhase === "intro") state.activePhase = "fase1";
+        if (!isPhaseUnlocked(state.activePhase)) {
+          state.activePhase = getVisiblePhases().slice(-1)[0] || "fase1";
+        }
+      }
+
+      function renderStageTabs() {
+        refs.stageTabs.innerHTML = "";
+        PHASES.forEach((phase) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "stage-tab";
+          btn.textContent = phase.label;
+          btn.disabled = !isPhaseUnlocked(phase.id);
+          btn.classList.toggle("active", state.activePhase === phase.id);
+          btn.addEventListener("click", () => goToPhase(phase.id));
+          refs.stageTabs.appendChild(btn);
+        });
+      }
+
+      function updateButtons() {
+        refs.toFase2Btn.disabled = !isFase1Complete();
+        refs.toFase3Btn.disabled = !isFase1Complete();
+        refs.toFase4Btn.disabled = !isFase3Complete();
+        refs.toFase5Btn.disabled = !isFase4Complete();
+        refs.toSummaryBtn.disabled = !isFase5Complete();
+
+        refs.stageTabs.querySelectorAll(".stage-tab").forEach((btn, index) => {
+          const phase = PHASES[index];
+          btn.disabled = !isPhaseUnlocked(phase.id);
+          btn.classList.toggle("active", state.activePhase === phase.id);
+        });
+
+        const visible = getVisiblePhases();
+        const idx = visible.indexOf(state.activePhase);
+        refs.prevStageBtn.disabled = idx <= 0;
+        refs.nextStageBtn.disabled = idx === -1 || idx >= visible.length - 1;
+
+        refs.phase2Status.textContent = phase2Message();
+        renderRankingStatus();
+      }
+
+      function updateProgress() {
+        const required = requiredKeys();
+        const answered = required.filter((key) => isAnswered(key)).length;
+        const percent = required.length ? Math.round((answered / required.length) * 100) : 0;
+        refs.progressFill.style.width = `${percent}%`;
+        refs.progressText.textContent = `Voortgang: ${percent}% (${answered}/${required.length})`;
+      }
+
+      function requiredKeys() {
+        const base = [
+          "back_habit",
+          "back_imec",
+          "back_video",
+          "back_reading",
+          "search_query",
+          "source_name",
+          "source_url",
+          "gevonden_actie",
+          "waarom_bruikbaar",
+          "actie_5_inspanning",
+          "actie_5_impact",
+          "rank_easy",
+          "rank_effect",
+          "rank_discipline",
+          "rank_hold",
+          "poster_title",
+          "poster_visual_order",
+          "poster_highlight_action",
+          "check_title",
+          "check_five_actions",
+          "check_order",
+          "check_effort",
+          "check_impact",
+          "check_online_action",
+          "check_online_source"
+        ];
+
+        ACTION_CATEGORIES.forEach((category) => {
+          base.push(`${category.id}_titel`);
+          base.push(`${category.id}_uitleg`);
+          base.push(`${category.id}_inspanning`);
+          base.push(`${category.id}_impact`);
+          base.push(`${category.id}_order`);
+        });
+        base.push("actie_5_order");
+
+        return base;
+      }
+
+      function isAnswered(key) {
+        const value = getAnswer(key);
+        if (key.startsWith("check_")) return value === "true";
+        return typeof value === "string" && value.trim().length > 0;
+      }
+
+      function phase2Message() {
+        const states = ACTION_CATEGORIES.map((category) => getActionBarrierState(category.id));
+        const readyCount = states.filter((state) => state.ready).length;
+        if (readyCount === ACTION_CATEGORIES.length) {
+          return "Top: alle 4 acties zijn klaar. Je kan nu naar fase 3.";
+        }
+        return `Je bent ${readyCount}/4 acties klaar. Je mag al doorgaan naar fase 3 en later terugkomen om deze acties af te werken.`;
+      }
+
+      function isFase1Complete() {
+        return ["back_habit", "back_imec", "back_video", "back_reading"].every((key) => isAnswered(key));
+      }
+
+      function isFase2Complete() {
+        return ACTION_CATEGORIES.every((category) => getActionBarrierState(category.id).ready);
+      }
+
+      function isFase3Complete() {
+        return ["search_query", "source_name", "source_url", "gevonden_actie", "waarom_bruikbaar", "actie_5_inspanning", "actie_5_impact"].every(
+          (key) => isAnswered(key)
+        );
+      }
+
+      function isFase4Complete() {
+        const total = getAllActionsForRanking().length;
+        const orders = getAllActionsForRanking().map((action) => getAnswer(`${action.id}_order`));
+        const filledOrders = orders.filter(Boolean);
+        const uniqueOrders = new Set(filledOrders);
+        const rankingReady = filledOrders.length === total && uniqueOrders.size === total;
+        const reflections = ["rank_easy", "rank_effect", "rank_discipline", "rank_hold"].every((key) => isAnswered(key));
+        return rankingReady && reflections;
+      }
+
+      function isFase5Complete() {
+        const posterFields = ["poster_title", "poster_visual_order", "poster_highlight_action"].every((key) => isAnswered(key));
+        const checks = [
+          "check_title",
+          "check_five_actions",
+          "check_order",
+          "check_effort",
+          "check_impact",
+          "check_online_action",
+          "check_online_source"
+        ].every((key) => getAnswer(key) === "true");
+        return posterFields && checks;
+      }
+
+      function isSummaryReady() {
+        return isFase1Complete() && isFase2Complete() && isFase3Complete() && isFase4Complete() && isFase5Complete();
+      }
+
+      function isPhaseUnlocked(phaseId) {
+        if (phaseId === "intro") return true;
+        if (phaseId === "fase1") return state.started;
+        if (phaseId === "fase2") return isFase1Complete();
+        if (phaseId === "fase3") return isFase1Complete();
+        if (phaseId === "fase4") return isFase3Complete();
+        if (phaseId === "fase5") return isFase4Complete();
+        if (phaseId === "summary") return isFase5Complete();
+        return false;
+      }
+
+      function getVisiblePhases() {
+        return PHASES.map((phase) => phase.id).filter((id) => isPhaseUnlocked(id));
+      }
+
+      function handleAnswerUpdate() {
+        saveState("Autosave om");
+        renderActionDependentViews();
+        updateButtons();
+        updateProgress();
+      }
+
+      function resetAll() {
+        const ok = window.confirm("Wil je alle ingevulde antwoorden resetten?");
+        if (!ok) return;
+        state = {
+          ...defaultState,
+          answers: {}
+        };
+        saveState("Reset uitgevoerd om");
+        rerenderAllInputs();
+        renderActionDependentViews();
+        syncAllCounters();
+        renderStageTabs();
+        syncVisibility();
+        updateButtons();
+        updateProgress();
+      }
+
+      function rerenderAllInputs() {
+        textAreaIds.forEach((id) => setInputValue(id, getAnswer(id)));
+        textInputIds.forEach((id) => setInputValue(id, getAnswer(id)));
+        staticSelectIds.forEach((id) => setInputValue(id, getAnswer(id)));
+        [
+          "check_title",
+          "check_five_actions",
+          "check_order",
+          "check_effort",
+          "check_impact",
+          "check_online_action",
+          "check_online_source"
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          el.checked = getAnswer(id) === "true";
+        });
+        rerenderActionFields();
+        renderPosterHighlightOptions();
+        setInputValue("poster_highlight_action", getAnswer("poster_highlight_action"));
+      }
+
+      function syncAllCounters() {
+        textAreaIds.forEach((id) => {
+          const el = document.getElementById(id);
+          updateCounter(id, el ? el.value.length : 0, el ? el.maxLength || 0 : 0);
+        });
+        ACTION_CATEGORIES.forEach((category) => {
+          updateCounter(`${category.id}_uitleg`, getAnswer(`${category.id}_uitleg`).length, 220);
+        });
+      }
+
+      function updateCounter(id, length, max) {
+        const counter = document.getElementById(`${id}_counter`);
+        if (!counter) return;
+        counter.textContent = `${length}/${max}`;
+      }
+
+      function setInputValue(id, value) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.value = value || "";
+      }
+
+      function getActionTitle(actionId) {
+        return getAnswer(`${actionId}_titel`).trim();
+      }
+
+      function getResearchActionTitle() {
+        const text = getAnswer("gevonden_actie").trim();
+        if (!text) return "Nieuwe actie uit zoekbron";
+        const firstPart = text.split(/[.!?]/)[0].trim().slice(0, 70);
+        return firstPart || "Nieuwe actie uit zoekbron";
+      }
+
+      function getAllActionsForRanking() {
+        const baseActions = ACTION_CATEGORIES.map((category) => ({
+          id: category.id,
+          label: category.label,
+          title: getActionTitle(category.id) || category.label,
+          uitleg: getAnswer(`${category.id}_uitleg`),
+          inspanning: getAnswer(`${category.id}_inspanning`),
+          impact: getAnswer(`${category.id}_impact`)
+        }));
+
+        baseActions.push({
+          id: "actie_5",
+          label: "Nieuwe actie uit zoekbron",
+          title: getResearchActionTitle(),
+          uitleg: getAnswer("gevonden_actie"),
+          inspanning: getAnswer("actie_5_inspanning"),
+          impact: getAnswer("actie_5_impact")
+        });
+
+        return baseActions;
+      }
+
+      function getActionLabelById(actionId) {
+        if (!actionId) return "";
+        const match = getAllActionsForRanking().find((action) => action.id === actionId);
+        return match ? match.title || match.label : "";
+      }
+
+      function scoreToLabel(score, type) {
+        if (!score) return "Nog niet ingevuld";
+        if (type === "inspanning") {
+          return (
+            {
+              "1": "1 - heel weinig moeite",
+              "2": "2 - weinig moeite",
+              "3": "3 - redelijke moeite",
+              "4": "4 - veel moeite",
+              "5": "5 - heel veel moeite"
+            }[score] || "Nog niet ingevuld"
+          );
+        }
+        return (
+          {
+            "1": "1 - klein verschil",
+            "2": "2 - eerder klein",
+            "3": "3 - matig verschil",
+            "4": "4 - groot verschil",
+            "5": "5 - heel groot verschil"
+          }[score] || "Nog niet ingevuld"
+        );
+      }
+
+      function getAnswer(key) {
+        return state.answers[key] || "";
+      }
+
+      function setAnswer(key, value) {
+        state.answers[key] = value;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+    </script>
+    <script>
+      (function () {
+        const btn = document.getElementById("globalMenuBtn");
+        const closeBtn = document.getElementById("globalMenuCloseBtn");
+        const drawer = document.getElementById("globalMenuDrawer");
+        const backdrop = document.getElementById("globalMenuBackdrop");
+        if (!btn || !closeBtn || !drawer || !backdrop) return;
+
+        function openMenu() {
+          drawer.classList.remove("hidden");
+          backdrop.classList.remove("hidden");
+          requestAnimationFrame(() => drawer.classList.add("open"));
+          btn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMenu() {
+          drawer.classList.remove("open");
+          backdrop.classList.add("hidden");
+          btn.setAttribute("aria-expanded", "false");
+          setTimeout(() => drawer.classList.add("hidden"), 180);
+        }
+
+        btn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", closeMenu);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeMenu();
+        });
+      })();
+    </script>
+  </body>
+</html>

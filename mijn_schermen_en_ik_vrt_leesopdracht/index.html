@@ -1,0 +1,2472 @@
+<!doctype html>
+<html lang="nl-BE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mijn schermen en ik - leesopdracht</title>
+    <style>
+      :root {
+        --brand-primary: #5200ff;
+        --brand-secondary: #03ddef;
+        --bg: #f8f7f3;
+        --surface: #ffffff;
+        --text: #111111;
+        --muted: #555555;
+        --border: #d9d4f5;
+        --success: #1f8a4d;
+        --warning: #c47a00;
+        --info: #eaf2ff;
+        --radius: 16px;
+        --radius-sm: 12px;
+        --shadow: 0 10px 26px rgba(25, 8, 82, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 8%, #ffffff 0%, rgba(255, 255, 255, 0) 42%),
+          linear-gradient(140deg, #f5f3ff 0%, #f8f7f3 52%, #edfafd 100%);
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      .app {
+        width: min(1080px, 94vw);
+        margin: 20px auto 36px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .topbar {
+        padding: 18px;
+        background: linear-gradient(120deg, #5200ff 0%, #3926b8 58%, #03ddef 100%);
+        color: #f4f5ff;
+      }
+
+      .topbar-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.35rem, 3.6vw, 2rem);
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        font-size: 0.95rem;
+        color: #e3e5ff;
+      }
+
+      .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .status-pill {
+        border: 1px solid rgba(227, 229, 255, 0.45);
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 0.84rem;
+        background: rgba(255, 255, 255, 0.08);
+        color: #f7f8ff;
+      }
+
+      .progress-wrap {
+        margin-top: 12px;
+      }
+
+      .progress-track {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.25);
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        width: 0%;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #ffffff 0%, #b8fbff 100%);
+        transition: width 220ms ease;
+      }
+
+      .progress-text {
+        margin: 8px 0 0;
+        font-size: 0.9rem;
+        color: #eef0ff;
+      }
+
+      .stage-nav {
+        margin-top: 14px;
+        padding: 12px 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .stage-tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .stage-tab {
+        border: 1px solid #cfc8f5;
+        border-radius: 999px;
+        background: #fbfaff;
+        color: #2a2360;
+        padding: 8px 12px;
+        font: inherit;
+        font-size: 0.88rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .stage-tab:hover {
+        border-color: #8f7de6;
+      }
+
+      .stage-tab.active {
+        border-color: var(--brand-primary);
+        background: #efe9ff;
+        color: #26006f;
+      }
+
+      .stage-tab:disabled {
+        opacity: 0.52;
+        cursor: not-allowed;
+      }
+
+      .stage-move {
+        display: flex;
+        gap: 8px;
+      }
+
+      .section {
+        margin-top: 14px;
+        padding: 16px;
+      }
+
+      .section-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .instruction {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      .help-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        border: 1px solid #cec7f4;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .help-btn:hover {
+        background: #ece5ff;
+      }
+
+      .help-btn:focus-visible,
+      .q-help-btn:focus-visible,
+      .btn:focus-visible,
+      .stage-tab:focus-visible,
+      .chip:focus-visible,
+      .short-text:focus-visible,
+      .text-input:focus-visible {
+        outline: 3px solid rgba(82, 0, 255, 0.22);
+        outline-offset: 2px;
+      }
+
+      .help-box {
+        margin-top: 8px;
+        border: 1px solid #d7cff7;
+        border-left: 4px solid var(--brand-secondary);
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: #f6feff;
+        color: #25333b;
+        font-size: 0.9rem;
+      }
+
+      .question-list {
+        margin-top: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .q-card {
+        border: 1px solid #e2ddf9;
+        border-radius: var(--radius-sm);
+        background: #fff;
+        padding: 12px;
+      }
+
+      .q-card fieldset {
+        border: 0;
+        margin: 0;
+        padding: 0;
+      }
+
+      .q-card legend,
+      .q-label {
+        font-weight: 700;
+        font-size: 0.96rem;
+      }
+
+      .q-legend-row,
+      .q-label-row {
+        width: 100%;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .q-title-text {
+        flex: 1;
+      }
+
+      .q-help-btn {
+        width: 24px;
+        height: 24px;
+        border-radius: 999px;
+        border: 1px solid #cec7f4;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        font-weight: 700;
+        font-size: 0.82rem;
+        cursor: pointer;
+        flex: 0 0 auto;
+        margin-top: -1px;
+      }
+
+      .q-help-btn:hover {
+        background: #ece5ff;
+      }
+
+      .q-help-box {
+        margin: 7px 0 0;
+        border: 1px solid #d7cff7;
+        border-left: 4px solid var(--brand-secondary);
+        border-radius: 10px;
+        padding: 7px 9px;
+        background: #f6feff;
+        color: #25333b;
+        font-size: 0.86rem;
+      }
+
+      .answer-feedback {
+        margin: 8px 0 0;
+        border-radius: 10px;
+        border: 1px solid #ded9fa;
+        background: #f8f5ff;
+        color: #3a3465;
+        font-size: 0.86rem;
+        padding: 7px 9px;
+      }
+
+      .answer-feedback.correct {
+        border-color: #b8e9c7;
+        background: #eefaf3;
+        color: #1d7442;
+      }
+
+      .answer-feedback.incorrect {
+        border-color: #f2cccc;
+        background: #fff3f3;
+        color: #8a2f2f;
+      }
+
+      .answer-feedback.partial {
+        border-color: #eed8a7;
+        background: #fff9ec;
+        color: #7e5a10;
+      }
+
+      .options {
+        margin-top: 8px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .option {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid #ddd7f8;
+        border-radius: 999px;
+        padding: 9px 12px;
+        background: #fcfbff;
+        color: #2f2f2f;
+        font-size: 0.9rem;
+      }
+
+      .option:hover {
+        border-color: #a491ea;
+      }
+
+      .option input {
+        accent-color: var(--brand-primary);
+      }
+
+      .option:has(input:checked) {
+        border-color: var(--brand-primary);
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .short-text,
+      .text-input {
+        width: 100%;
+        margin-top: 8px;
+        border: 1px solid #d8d1f7;
+        border-radius: 10px;
+        padding: 9px 10px;
+        font: inherit;
+        color: var(--text);
+        background: #fff;
+      }
+
+      .counter {
+        margin: 4px 0 0;
+        font-size: 0.8rem;
+        color: var(--muted);
+      }
+
+      .section-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .btn-primary {
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #4500d7;
+      }
+
+      .btn-secondary {
+        background: #fff;
+        border-color: #d1caf5;
+        color: #312c58;
+      }
+
+      .btn-secondary:hover {
+        background: #f6f4ff;
+      }
+
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .global-menu-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1300;
+        width: 44px;
+        height: 44px;
+        border: 1px solid #cec7f4;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #341098;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(25, 8, 82, 0.14);
+      }
+
+      .global-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1290;
+        background: rgba(16, 12, 38, 0.36);
+      }
+
+      .global-menu-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1310;
+        width: min(320px, 86vw);
+        height: 100vh;
+        background: #fff;
+        border-right: 1px solid #ddd6fb;
+        box-shadow: 0 18px 36px rgba(24, 11, 63, 0.22);
+        padding: 14px;
+        transform: translateX(-105%);
+        transition: transform 180ms ease;
+      }
+
+      .global-menu-drawer.open {
+        transform: translateX(0);
+      }
+
+      .global-menu-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .global-menu-head h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: #28196d;
+      }
+
+      .global-menu-close {
+        border: 1px solid #d7cff7;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        border-radius: 10px;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+      }
+
+      .global-menu-links {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .global-menu-links a {
+        text-decoration: none;
+        color: #2f2c4c;
+        font-weight: 600;
+        border: 1px solid #ddd7f8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: #fcfbff;
+      }
+
+      .global-menu-links a.active {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .reading-top {
+        margin-top: 10px;
+        border: 1px solid #ddd8f9;
+        border-radius: 12px;
+        padding: 12px;
+        background: #fcfbff;
+      }
+
+      .reading-top h3 {
+        margin: 0;
+        font-size: 1.08rem;
+        color: #2d1f67;
+      }
+
+      .reading-top p {
+        margin: 8px 0 0;
+        color: #404040;
+        line-height: 1.56;
+      }
+
+      .chunk-status {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .chunk-nav {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .chunk-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .chip {
+        border: 1px solid #d5cef7;
+        border-radius: 999px;
+        background: #fff;
+        color: #2e2e2e;
+        padding: 8px 11px;
+        font: inherit;
+        font-size: 0.84rem;
+        cursor: pointer;
+      }
+
+      .chip.active {
+        border-color: var(--brand-primary);
+        background: #efe9ff;
+        color: #2c0a83;
+      }
+
+      .chip.read {
+        border-color: #b8e9ef;
+        background: #f2fdff;
+      }
+
+      .chunk-move {
+        display: flex;
+        gap: 8px;
+      }
+
+      .chunk-card {
+        margin-top: 10px;
+        border: 1px solid #ddd8f9;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .chunk-card h4 {
+        margin: 0;
+        font-size: 1rem;
+        color: #2d1f67;
+      }
+
+      .chunk-card p {
+        margin: 8px 0 0;
+        line-height: 1.62;
+        color: #2d2d2d;
+      }
+
+      .transfer-links {
+        margin-top: 10px;
+        border: 1px solid #d8d1f8;
+        border-radius: 12px;
+        background: #f9f7ff;
+        padding: 10px;
+      }
+
+      .transfer-links p {
+        margin: 0;
+        color: #3d3d3d;
+        font-size: 0.9rem;
+      }
+
+      .transfer-links .link-row {
+        margin-top: 8px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .link-btn {
+        display: inline-block;
+        border: 1px solid #bfb6f2;
+        border-radius: 999px;
+        background: #fff;
+        color: #2d187b;
+        padding: 7px 11px;
+        font-size: 0.84rem;
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .link-btn:hover {
+        background: #efe9ff;
+      }
+
+      .glossary-list {
+        margin-top: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .glossary-item {
+        border: 1px solid #ddd8f8;
+        border-radius: 10px;
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .glossary-item summary {
+        cursor: pointer;
+        padding: 10px;
+        font-weight: 700;
+        color: #2f1f70;
+      }
+
+      .glossary-item p {
+        margin: 0;
+        padding: 0 10px 10px;
+        color: #3d3d3d;
+        line-height: 1.5;
+      }
+
+      .flashcard-panel {
+        margin-top: 10px;
+        border: 1px solid #ddd8f8;
+        border-radius: 12px;
+        background: #fbfaff;
+        padding: 10px;
+      }
+
+      .flashcard-hint {
+        margin: 0;
+        font-size: 0.86rem;
+        color: #57526f;
+      }
+
+      .flashcard-card {
+        margin-top: 8px;
+        border: 1px solid #cfc6f5;
+        border-radius: 12px;
+        background: linear-gradient(160deg, #ffffff 0%, #f1edff 100%);
+        min-height: 150px;
+        padding: 12px;
+        cursor: pointer;
+      }
+
+      .flashcard-card:focus-visible {
+        outline: 3px solid rgba(82, 0, 255, 0.22);
+        outline-offset: 2px;
+      }
+
+      .flashcard-side-label {
+        margin: 0;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #5c4ea3;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .flashcard-main {
+        margin: 8px 0 0;
+        font-size: 1.05rem;
+        color: #241c53;
+        line-height: 1.5;
+      }
+
+      .flashcard-progress {
+        margin: 8px 0 0;
+        font-size: 0.88rem;
+        color: #585858;
+      }
+
+      .flashcard-actions {
+        margin-top: 8px;
+      }
+
+      .summary-grid {
+        margin-top: 10px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .summary-card {
+        border: 1px solid #ddd8f8;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .summary-card h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: #2a1e63;
+      }
+
+      .summary-list {
+        margin: 8px 0 0;
+        padding-left: 18px;
+      }
+
+      .summary-list li + li {
+        margin-top: 5px;
+      }
+
+      .summary-source {
+        border: 1px solid #d9d3f8;
+        border-radius: 12px;
+        background: #fff;
+        padding: 12px;
+      }
+
+      .summary-source-head h3 {
+        margin: 0;
+      }
+
+      .summary-source-head p {
+        margin: 6px 0 0;
+        color: var(--muted);
+      }
+
+      .summary-meta {
+        margin-top: 8px;
+        border: 1px solid #ded9fa;
+        border-radius: 10px;
+        background: #fbfaff;
+        padding: 8px 10px;
+      }
+
+      .summary-meta p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #353535;
+      }
+
+      .summary-meta p + p {
+        margin-top: 4px;
+      }
+
+      .export-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 1200;
+      }
+
+      .modal.hidden {
+        display: none;
+      }
+
+      .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(20, 8, 60, 0.54);
+      }
+
+      .modal-content {
+        position: relative;
+        width: min(92vw, 470px);
+        border: 1px solid #d2cbf6;
+        border-radius: 14px;
+        background: #fff;
+        padding: 14px;
+        box-shadow: 0 22px 46px rgba(15, 8, 42, 0.25);
+      }
+
+      .modal-content h3 {
+        margin: 0;
+      }
+
+      .modal-content p {
+        margin: 8px 0 0;
+        color: var(--muted);
+      }
+
+      .modal-form {
+        margin-top: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .modal-form label {
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+
+      .modal-actions {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .modal-status {
+        margin-top: 8px;
+        min-height: 18px;
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+
+      .site-footer {
+        margin-top: 14px;
+        text-align: center;
+        font-size: 0.82rem;
+        color: #5f5f5f;
+      }
+
+      @media (max-width: 850px) {
+        .stage-nav {
+          align-items: stretch;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .app {
+          width: min(96vw, 760px);
+          margin-top: 14px;
+        }
+
+        .topbar,
+        .section {
+          padding: 14px;
+          border-radius: 14px;
+        }
+
+        .stage-nav,
+        .stage-tabs,
+        .stage-move,
+        .section-actions,
+        .chunk-move,
+        .modal-actions,
+        .export-actions {
+          flex-direction: column;
+        }
+
+        .btn,
+        .stage-tab {
+          width: 100%;
+        }
+      }
+
+      @media print {
+        .no-print,
+        #introSection,
+        #predictionSection,
+        #readingSection,
+        #understandingSection,
+        #transferSection,
+        #glossarySection,
+        #stageNav,
+        #exportModal,
+        #topResetBtn,
+        #openExportModalBtn,
+        #summaryResetBtn,
+        .topbar-actions {
+          display: none !important;
+        }
+
+        body {
+          background: #fff;
+        }
+
+        .app {
+          width: 100%;
+          margin: 0;
+        }
+
+        .card,
+        .summary-source {
+          border: 1px solid #cfcfcf;
+          box-shadow: none;
+        }
+
+        #summarySection {
+          display: block !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="globalMenuBtn" class="global-menu-btn no-print" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <div id="globalMenuBackdrop" class="global-menu-backdrop hidden no-print"></div>
+    <nav id="globalMenuDrawer" class="global-menu-drawer hidden no-print" aria-label="Projectmenu">
+      <div class="global-menu-head">
+        <h2>Mijn schermen en ik</h2>
+        <button id="globalMenuCloseBtn" class="global-menu-close" type="button" aria-label="Sluit menu">✕</button>
+      </div>
+      <div class="global-menu-links">
+        <a href="../index.html">Startpagina</a>
+        <a href="../imec_reflectiedashboard/imec.html">imec reflectiedashboard</a>
+        <a href="../mijn_schermen_en_ik_video_prevragen/index.html">Video-opdracht</a>
+        <a class="active" href="index.html">Leesopdracht</a>
+        <a href="../posteropdracht_schermtijd_acties/index.html">Posteropdracht</a>
+      </div>
+    </nav>
+    <main class="app">
+      <header class="topbar card">
+        <div class="topbar-row">
+          <div>
+            <h1>Mijn schermen en ik - leesopdracht</h1>
+            <p class="subtitle">Je voorspelt, leest in delen, beantwoordt vragen en maakt een samenvatting.</p>
+          </div>
+          <div class="topbar-actions no-print">
+            <span id="storageStatus" class="status-pill" aria-live="polite">Autosave actief</span>
+            <button id="topResetBtn" type="button" class="btn btn-secondary">Reset alles</button>
+          </div>
+        </div>
+
+        <div class="progress-wrap" aria-label="Voortgang">
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+          <p id="progressText" class="progress-text">Voortgang: 0%</p>
+        </div>
+      </header>
+
+      <section id="stageNav" class="card stage-nav hidden no-print" aria-label="Sectienavigatie">
+        <div id="stageTabs" class="stage-tabs" role="tablist" aria-label="Secties"></div>
+        <div class="stage-move">
+          <button id="prevStageBtn" type="button" class="btn btn-secondary">Vorige sectie</button>
+          <button id="nextStageBtn" type="button" class="btn btn-primary">Volgende sectie</button>
+        </div>
+      </section>
+
+      <section id="introSection" class="section card">
+        <div class="section-head">
+          <h2>Start</h2>
+        </div>
+        <p class="instruction">Stap 1: voorspellen. Stap 2: lezen in delen. Stap 3: begrijpen en linken.</p>
+        <div class="section-actions no-print">
+          <button id="startBtn" type="button" class="btn btn-primary">Start</button>
+        </div>
+      </section>
+
+      <section id="predictionSection" class="section card hidden">
+        <div class="section-head">
+          <h2>Voor het lezen</h2>
+          <button id="predictionHelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="predictionHelpBox">?</button>
+        </div>
+        <p class="instruction">Beantwoord deze korte voorspellingsvragen.</p>
+        <p id="predictionHelpBox" class="help-box hidden">Deze vragen helpen je straks vergelijken met wat de tekst echt zegt.</p>
+        <form id="predictionForm" class="question-list" novalidate></form>
+        <div class="section-actions no-print">
+          <button id="toReadingBtn" type="button" class="btn btn-primary" disabled>Ga naar de tekst</button>
+        </div>
+      </section>
+
+      <section id="readingSection" class="section card hidden">
+        <div class="section-head">
+          <h2>Lees de tekst</h2>
+        </div>
+        <p class="instruction">Lees per kaart en neem telkens één kernidee mee naar de volgende stap.</p>
+
+        <article class="reading-top">
+          <h3>We zitten gemiddeld 3 uur per dag op onze smartphone, maar hoe problematisch is dat echt?</h3>
+          <p class="chunk-status" id="chunkStatus">Gelezen: 1/7</p>
+        </article>
+
+        <div class="chunk-nav no-print">
+          <div id="chunkChips" class="chunk-chips" role="tablist" aria-label="Leesdelen"></div>
+          <div class="chunk-move">
+            <button id="prevChunkBtn" type="button" class="btn btn-secondary">Vorig deel</button>
+            <button id="nextChunkBtn" type="button" class="btn btn-primary">Volgend deel</button>
+          </div>
+        </div>
+
+        <article class="chunk-card">
+          <h4 id="chunkHeading"></h4>
+          <p id="chunkText"></p>
+        </article>
+
+        <div class="section-actions no-print">
+          <button id="toUnderstandingBtn" type="button" class="btn btn-primary" disabled>Ga naar begrip</button>
+        </div>
+      </section>
+
+      <section id="understandingSection" class="section card hidden">
+        <div class="section-head">
+          <h2>Begrijp de tekst</h2>
+          <button id="understandingHelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="understandingHelpBox">?</button>
+        </div>
+        <p class="instruction">Toon met deze vragen dat je de kern van de tekst begrepen hebt.</p>
+        <p id="understandingHelpBox" class="help-box hidden">Deze vragen testen of je de kern van de tekst goed begrepen hebt.</p>
+        <form id="understandingForm" class="question-list" novalidate></form>
+        <div class="section-actions no-print">
+          <button id="toTransferBtn" type="button" class="btn btn-primary" disabled>Ga naar verbanden</button>
+        </div>
+      </section>
+
+      <section id="transferSection" class="section card hidden">
+        <div class="section-head">
+          <h2>Leg verbanden</h2>
+          <button id="transferHelpBtn" type="button" class="help-btn no-print" aria-expanded="false" aria-controls="transferHelpBox">?</button>
+        </div>
+        <p class="instruction">Maak duidelijke links: 1 met imec, 1 met de video en 1 met je eigen gedrag.</p>
+        <p id="transferHelpBox" class="help-box hidden">Hier koppel je de tekst aan imec, de video en je eigen gewoonten.</p>
+
+        <div class="transfer-links">
+          <p>Koppeling met eerdere lesmaterialen:</p>
+          <div class="link-row">
+            <a class="link-btn" href="../imec_reflectiedashboard/imec.html">Open imec-reflectiedashboard</a>
+            <a class="link-btn" href="../mijn_schermen_en_ik_video_prevragen/index.html">Open video-oefening</a>
+          </div>
+        </div>
+
+        <form id="transferForm" class="question-list" novalidate></form>
+        <div class="section-actions no-print">
+          <button id="toGlossaryBtn" type="button" class="btn btn-primary" disabled>Ga naar woorden</button>
+        </div>
+      </section>
+
+      <section id="glossarySection" class="section card hidden">
+        <div class="section-head">
+          <h2>Woorden en concepten</h2>
+        </div>
+        <p class="instruction">Open alleen de woorden die je nodig hebt tijdens je reflectie.</p>
+        <div id="glossaryList" class="glossary-list"></div>
+        <div class="section-actions no-print">
+          <button id="toggleFlashcardsBtn" type="button" class="btn btn-secondary">Maak flashcards</button>
+        </div>
+        <div id="flashcardPanel" class="flashcard-panel hidden no-print" aria-live="polite">
+          <p class="flashcard-hint">Klik op de kaart om te draaien van term naar uitleg.</p>
+          <div
+            id="flashcardCard"
+            class="flashcard-card"
+            role="button"
+            tabindex="0"
+            aria-pressed="false"
+            aria-label="Flashcard: klik om te draaien"
+          >
+            <p id="flashcardSideLabel" class="flashcard-side-label"></p>
+            <p id="flashcardMain" class="flashcard-main"></p>
+          </div>
+          <p id="flashcardProgress" class="flashcard-progress"></p>
+          <div class="section-actions flashcard-actions">
+            <button id="flashcardPrevBtn" type="button" class="btn btn-secondary">Vorige</button>
+            <button id="flashcardFlipBtn" type="button" class="btn btn-secondary">Draai</button>
+            <button id="flashcardNextBtn" type="button" class="btn btn-secondary">Volgende</button>
+            <button id="flashcardShuffleBtn" type="button" class="btn btn-secondary">Shuffle</button>
+          </div>
+        </div>
+        <div class="section-actions no-print">
+          <button id="toSummaryBtn" type="button" class="btn btn-primary">Ga naar samenvatting</button>
+        </div>
+      </section>
+
+      <section id="summarySection" class="section card hidden">
+        <h2>Mijn samenvatting</h2>
+        <p class="instruction">Vat je belangrijkste inzichten kort samen en bewaar daarna je overzicht.</p>
+
+        <div id="exportSource" class="summary-source">
+          <div class="summary-source-head">
+            <h3>Mijn schermen en ik - leesopdracht samenvatting</h3>
+            <p>Klasadaptatie over schermtijd, digibesitas, digital detox en digitaal DNA.</p>
+          </div>
+          <div class="summary-meta">
+            <p><strong>Module:</strong> Mijn schermen en ik</p>
+            <p><strong>Opdracht:</strong> VRT-leesopdracht</p>
+            <p><strong>Naam:</strong> <span id="summaryStudentName">Nog niet ingevuld</span></p>
+            <p><strong>Klas:</strong> <span id="summaryStudentClass">Nog niet ingevuld</span></p>
+          </div>
+
+          <form id="summaryInsightForm" class="question-list" novalidate></form>
+          <div id="summaryCards" class="summary-grid"></div>
+          <p class="site-footer">© Robbe Wulgaert · AI in de Klas · aiindeklas.be / robbewulgaert.be</p>
+        </div>
+
+        <div class="export-actions no-print">
+          <button id="openExportModalBtn" type="button" class="btn btn-primary">Bewaar je antwoorden</button>
+          <button id="summaryResetBtn" type="button" class="btn btn-secondary">Reset alles</button>
+        </div>
+      </section>
+
+      <footer class="site-footer">© Robbe Wulgaert · AI in de Klas · aiindeklas.be / robbewulgaert.be</footer>
+    </main>
+
+    <div id="exportModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="exportTitle">
+        <h3 id="exportTitle">Bewaar je antwoorden</h3>
+        <p>Vul eerst je naam en klas in voor je exporteert.</p>
+        <div class="modal-form">
+          <label for="studentNameInput">Naam leerling</label>
+          <input id="studentNameInput" class="text-input" type="text" autocomplete="name" maxlength="80" />
+          <label for="studentClassInput">Klas</label>
+          <input id="studentClassInput" class="text-input" type="text" maxlength="40" />
+        </div>
+        <div class="modal-actions">
+          <button id="savePngBtn" type="button" class="btn btn-primary">Opslaan als PNG</button>
+          <button id="savePdfBtn" type="button" class="btn btn-primary">Opslaan als PDF</button>
+          <button id="closeExportModalBtn" type="button" class="btn btn-secondary">Sluiten</button>
+        </div>
+        <p id="exportModalStatus" class="modal-status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script>
+      // Configuratie van de opdracht.
+      const APP_CONFIG = {
+        storageKey: "mijn_schermen_en_ik_vrt_leesopdracht_state_v1"
+      };
+
+      const STAGES = [
+        { id: "prediction", label: "Voor het lezen" },
+        { id: "reading", label: "Lees de tekst" },
+        { id: "understanding", label: "Begrijp de tekst" },
+        { id: "transfer", label: "Leg verbanden" },
+        { id: "glossary", label: "Woorden" },
+        { id: "summary", label: "Samenvatting" }
+      ];
+
+      const PREDICTION_QUESTIONS = [
+        {
+          key: "pre_1",
+          question: "Denk jij dat meer schermtijd automatisch betekent dat schermgebruik slechter is?",
+          type: "multiple_choice",
+          options: ["ja", "nee", "dat hangt ervan af"]
+        },
+        {
+          key: "pre_2",
+          question: "Wat denk jij: maken meldingen en likes focussen moeilijker?",
+          type: "multiple_choice",
+          options: ["ja", "soms", "nee"]
+        },
+        {
+          key: "pre_3",
+          question: "Denk jij dat een volledige digitale detox voor iedereen goed werkt?",
+          type: "multiple_choice",
+          options: ["ja", "nee", "dat hangt ervan af"]
+        },
+        {
+          key: "pre_4",
+          question: "Denk jij dat het helpt om eerst je eigen gebruikspatroon te leren kennen?",
+          type: "multiple_choice",
+          options: ["ja", "misschien", "nee"]
+        }
+      ];
+
+      const READING_CHUNKS = [
+        {
+          id: "chunk_1",
+          heading: "Meer dan 3 uur per dag",
+          text: `Vlamingen spenderen gemiddeld meer dan 3 uur per dag op hun smartphone en bijna de helft voelt zich afhankelijk van hun toestel, blijkt uit de Digimeter 2024.
+Meer schermtijd hangt samen met mentale problemen en vermindert de aandachtsspanne, maar een 'total digital detox' is niet per se de beste oplossing volgens experts.
+"De meeste mensen pakken hun digibesitas aan zoals ze ook met echte obesitas zouden omgaan", zegt professor Lieven De Marez (UGent), die pleit voor inzicht in je eigen gebruiksprofiel in plaats van een algemeen verbod.`
+        },
+        {
+          id: "chunk_2",
+          heading: "Vraag van de week en cijfers",
+          text: `Hoe kunnen we minder tijd doorbrengen op onze smartphone en meer in het echte leven? Die vraag staat deze week centraal in Club Kawtar op MNM. Presentatoren Kawtar en Wannes proberen een week lang hun schermtijd terug te dringen en gaan in gesprek met luisteraars en experts over hoe dat in de praktijk lukt.
+De timing is geen toeval. We worstelen steeds vaker met de vraag of onze uren achter een scherm niet te veel worden. Denk aan het smartphoneverbod op school of de roep om strengere regels rond socialemediagebruik. Maar hoe schadelijk is schermtijd nu echt? En wat kunnen we eraan doen?
+Die zaken gaan over jongeren, maar eigenlijk zitten alle Vlamingen ermee in, zegt professor Lieven De Marez (UGent) die jaarlijks meewerkt aan de Digimeter. Dat onderzoek brengt het scherm- en mediagebruik van de Vlaming in kaart, en daaruit blijkt dat bijna de helft van de Vlamingen zich afhankelijk voelt van zijn of haar smartphone.
+"We zien ieder jaar de schermtijd groeien", zegt hij. "Volwassenen spenderen gemiddeld 182 minuten per dag op hun smartphone. Jongeren tikken al aan tegen meer dan 4 uur per dag." Sociale media slorpen het grootste deel van die tijd op, zegt hij. "Vooral apps zoals Snapchat en TikTok springen erboven uit."
+Schermtijd in minuten per dag: Vlamingen spenderen gemiddeld 182 minuten per dag op hun smartphone.`
+        },
+        {
+          id: "chunk_3",
+          heading: "Verband en oorzaak",
+          text: `Is meer schermtijd dan altijd slechter? Het antwoord is dubbel volgens De Marez. "Als het over mentaal welzijn gaat, bestaat er bijvoorbeeld wel degelijk een duidelijk verband tussen meer schermtijd en meer mentale problemen", zegt hij.
+Maar: dat is geen causaal verband. "Met andere woorden: we zien bij mensen die veel schermtijd hebben gemiddeld vaker problemen opduiken, maar daarmee kun je nog niet aantonen dat al die problemen enkel aan schermtijd toe te schrijven zijn."
+Voor de ene gebruiker zijn sociale media belangrijk voor positieve sociale contacten, en zijn de gevolgen dus positief. Voor de ander kan dat niet het geval zijn.
+Voor slaapproblemen is schermtijd dan weer wel duidelijk aan te wijzen als oorzaak. "Door laat te blijven scrollen verlies je slaaptijd. Bovendien geeft het blauwe licht van je telefoon je hersenen het signaal dat het nog dag is, waardoor de aanmaak van melatonine wordt onderdrukt en inslapen moeilijker wordt", zegt De Marez.`
+        },
+        {
+          id: "chunk_4",
+          heading: "Digibesitas en digitale prikkels",
+          text: `Maar naast de sociale en mentale gevolgen, leeft er bij veel Vlamingen steeds vaker de zorg om hun cognitieve capaciteiten.
+"Die zorg is terecht. Denk aan je aandachtsspanne, concentratievermogen en geheugen: smartphones kunnen daar grote impact op hebben. Je voelt je sneller afgeleid, overprikkeld en minder goed in staat om moeilijke taken uit te voeren."
+Volgens De Marez bestaat er in de gedragswetenschappen een duidelijke term voor: digibesitas. "Dat is simpelweg een teveel aan digitale prikkels waar je moeilijk van kan afblijven."
+Apps zijn daar ook bewust op gebouwd. "Likes, meldingen en berichtjes geven telkens een kleine beloning, een snelle dopamineshot. Ons brein heeft dat graag. Maar daardoor wordt het moeilijker om je aandacht bij één taak te houden en om langere periodes zonder zo'n positieve prikkel vol te houden. Jongeren zijn daar extra gevoelig voor, omdat hun brein nog volop in ontwikkeling is."`
+        },
+        {
+          id: "chunk_5",
+          heading: "Tijdsblokken en gewoontes",
+          text: `Maar als je je smartphone gebruikt in duidelijke, afgebakende tijdsblokken, wordt de impact op je aandacht en welzijn veel kleiner. "Zo kan iemand met veel schermtijd soms minder negatieve gevolgen ervaren dan iemand die veel minder online is, maar voortdurend door prikkels wordt gestuurd", zegt hij.
+"Gezond gebruik draait dus vooral om hoe je je schermtijd invult. Wie zijn telefoon gebruikt zonder zich te laten leiden door het constante aanbod aan meldingen en impulsen, zit al een pak beter. Iedereen kan op elk moment beginnen sleutelen aan zijn digitale gewoontes, en kleine aanpassingen maken vaak al een groot verschil."`
+        },
+        {
+          id: "chunk_6",
+          heading: "Is een digital detox de oplossing?",
+          text: `Een van de mogelijke aanpakken is wat mensen de 'total digital detox' noemen. Dat is een geplande periode waarin je bewust alle digitale apparaten en technologieën uitschakelt en vermijdt.
+Sofie Van Hoecke (UGent), expert in data-analyse, werkte samen met psycholoog Marie-Anne Vanderhasselt mee aan een experiment voor Knack Weekend. Journaliste Aylin Koksal legde daarbij een maand lang haar sociale media stil, terwijl Van Hoecke met slimme technologie haar stressniveau, hartritme en slaapkwaliteit opvolgde.
+"Na één maand zagen we meteen positieve effecten", zegt ze. "Ze voelde zich minder gestrest en beter in haar vel, en dat zagen we ook objectief terug in de metingen: haar hartritme ’s nachts lag duidelijk lager."
+Tegelijk nuanceert Van Hoecke dat zo'n digitale detox geen universeel wondermiddel is. "De wetenschap is er niet uit. Sommige studies tonen vooral positieve effecten, andere zien net negatieve gevolgen wanneer mensen plots volledig stoppen met sociale media. Het hangt dus sterk af van persoon tot persoon."`
+        },
+        {
+          id: "chunk_7",
+          heading: "Iedereen heeft een ander digitaal DNA",
+          text: `De Marez beaamt dat een total detox niet per se de beste aanpak is. "De meeste mensen pakken hun digibesitas aan zoals ze ook met echte obesitas zouden omgaan", zegt hij.
+"Eerst probeer je het zelf: wat gezonder koken, wat meer bewegen, hopen dat je nieuwe gewoontes vanzelf blijven hangen. Als dat niet lukt, zoeken mensen vaak steun in een groep die structuur biedt. En pas wanneer ook dat onvoldoende helpt, stappen ze naar een diëtist die hun leefpatronen analyseert en kleine, haalbare aanpassingen voorstelt."
+En ook wat schermtijd betreft, werkt dat volgens hem beter. "De eerste stap is inzicht krijgen in je eigen gebruiksprofiel. Veel mensen weten niet hoe ze hun telefoon precies gebruiken", zegt De Marez.
+"Krijg je elke dag honderden berichtjes waarvan je er maar een paar echt leest? Ben je iemand die notificaties opspaart en ze in blokjes afwerkt? Heb je 'checkinggedrag', waarbij je telkens dezelfde vier apps in dezelfde volgorde opent? Of ben je iemand die van de ene app in de andere rolt zonder het te beseffen?"
+Als je dat patroon kent, wordt het veel makkelijker om het te doorbreken. "Daarom werkt een simpel verbod meestal niet. Je legt best niet iedereen dezelfde regels op, want iedereen heeft een ander digitaal 'DNA'", besluit hij.`
+        }
+      ];
+
+      const UNDERSTANDING_QUESTIONS = [
+        {
+          key: "u_1",
+          question: "Wat zegt de tekst over de gemiddelde schermtijd en afhankelijkheid van Vlamingen?",
+          type: "short_text",
+          help_text: "Zoek 2 kerncijfers: gemiddelde schermtijd per dag en hoeveel mensen zich afhankelijk voelen.",
+          max_length: 180
+        },
+        {
+          key: "u_2",
+          question: "Wat is volgens de tekst het verschil tussen een verband en een oorzaak?",
+          type: "multiple_choice",
+          help_text: "Verband = samen voorkomen. Oorzaak = het ene zorgt echt voor het andere.",
+          scored: true,
+          correct_option: "Een verband toont dat twee dingen samen voorkomen, maar bewijst niet meteen dat het ene het andere veroorzaakt.",
+          feedback_correct: "Juist. De tekst benadrukt expliciet dat een verband nog geen bewezen oorzaak is.",
+          feedback_incorrect: "Nog niet juist. In de tekst staat dat samen voorkomen niet automatisch betekent dat het ene het andere veroorzaakt.",
+          options: [
+            "Een verband toont dat twee dingen samen voorkomen, maar bewijst niet meteen dat het ene het andere veroorzaakt.",
+            "Een verband en een oorzaak betekenen hetzelfde als veel mensen hetzelfde gedrag tonen.",
+            "Een oorzaak betekent vooral dat twee dingen op hetzelfde moment beginnen.",
+            "Als je een verband ziet, weet je automatisch dat er ook een oorzaak is."
+          ]
+        },
+        {
+          key: "u_3",
+          question: "Waarom noemt de tekst slaapproblemen een duidelijker gevolg van schermgebruik?",
+          type: "multiple_choice",
+          help_text: "Denk aan 2 elementen uit de tekst: laat scrollen en blauw licht dat melatonine onderdrukt.",
+          scored: true,
+          correct_option: "Omdat laat scrollen vaak bedtijd wegneemt en blauw licht melatonine onderdrukt.",
+          feedback_correct: "Juist. De tekst noemt beide: verlies van slaaptijd en onderdrukking van melatonine.",
+          feedback_incorrect: "Nog niet juist. Denk aan laat blijven scrollen én het effect van blauw licht op melatonine.",
+          options: [
+            "Omdat laat scrollen vaak bedtijd wegneemt en blauw licht melatonine onderdrukt.",
+            "Omdat slaapproblemen vooral door schoolstress komen en weinig met schermen te maken hebben.",
+            "Omdat smartphonegebruik overdag automatisch alle slaapproblemen veroorzaakt.",
+            "Omdat nachtmodus het effect van schermlicht volledig wegneemt."
+          ]
+        },
+        {
+          key: "u_4",
+          question: "Wat bedoelt de tekst met digibesitas?",
+          type: "multiple_choice",
+          help_text: "Dit moeilijke woord gaat over te veel digitale prikkels waar je moeilijk van afblijft.",
+          scored: true,
+          correct_option: "Een teveel aan digitale prikkels waar je moeilijk van afblijft.",
+          feedback_correct: "Juist. Dat is exact hoe de tekst digibesitas uitlegt.",
+          feedback_incorrect: "Nog niet juist. Digibesitas gaat over een teveel aan digitale prikkels die je blijven trekken.",
+          options: [
+            "Een periode waarin je helemaal zonder schermen leeft.",
+            "Een teveel aan digitale prikkels waar je moeilijk van afblijft.",
+            "Alleen een probleem bij gamen, niet bij sociale media.",
+            "Een app die je schermtijd automatisch op nul zet."
+          ]
+        },
+        {
+          key: "u_5",
+          question: "Hoe zorgen meldingen, likes en berichtjes volgens de tekst voor afleiding?",
+          type: "short_text",
+          help_text: "De bedoeling is dat je uitlegt hoe kleine beloningen je aandacht telkens onderbreken.",
+          max_length: 180
+        },
+        {
+          key: "u_6",
+          question: "Waarom kan schermtijd in duidelijke tijdsblokken minder negatieve impact hebben?",
+          type: "short_text",
+          help_text: "Vergelijk: gebruik in blokken met een plan versus constant checken zonder structuur.",
+          max_length: 180
+        },
+        {
+          key: "u_7",
+          question: "Waarom noemt de tekst een total digital detox geen wondermiddel?",
+          type: "multiple_choice",
+          help_text: "Wondermiddel betekent: iets dat altijd voor iedereen werkt. De tekst zegt dat dit niet zo is.",
+          scored: true,
+          correct_option: "Omdat onderzoek gemengde resultaten toont en het effect per persoon verschilt.",
+          feedback_correct: "Juist. De tekst zegt dat een detox soms helpt, maar niet voor iedereen op dezelfde manier.",
+          feedback_incorrect: "Nog niet juist. De tekst nuanceert: effect verschilt per persoon en studies zijn gemengd.",
+          options: [
+            "Omdat onderzoek gemengde resultaten toont en het effect per persoon verschilt.",
+            "Omdat een detox alleen werkt als je nooit sociale media gebruikt.",
+            "Omdat elke detox altijd extra stress veroorzaakt.",
+            "Omdat experts vinden dat alleen minuten schermtijd belangrijk zijn."
+          ]
+        },
+        {
+          key: "u_8",
+          question: "Wat bedoelt de tekst met een ander digitaal DNA?",
+          type: "short_text",
+          help_text: "Digitaal DNA betekent je persoonlijke gebruikspatroon van apps, meldingen en checkgedrag.",
+          max_length: 160
+        },
+        {
+          key: "u_9",
+          question: "Welke voorbeelden van gebruiksprofiel of checkinggedrag noemt de tekst?",
+          type: "checkbox",
+          help_text: "Lees de opties letterlijk: hier kunnen meerdere antwoorden juist zijn.",
+          scored: true,
+          correct_options: [
+            "notificaties opsparen en later in blokjes afwerken",
+            "steeds dezelfde apps in dezelfde volgorde openen",
+            "van de ene app in de andere rollen zonder het te beseffen"
+          ],
+          feedback_correct: "Juist. Deze drie voorbeelden staan letterlijk in de tekst.",
+          feedback_partial: "Bijna juist. Je zit in de goede richting, maar je mist nog minstens één voorbeeld uit de tekst.",
+          feedback_incorrect: "Nog niet juist. Kijk opnieuw naar de voorbeelden die in de tekst letterlijk genoemd worden.",
+          options: [
+            "notificaties opsparen en later in blokjes afwerken",
+            "steeds dezelfde apps in dezelfde volgorde openen",
+            "van de ene app in de andere rollen zonder het te beseffen",
+            "alleen de weerapp openen en sociale media vermijden"
+          ]
+        }
+      ];
+
+      const TRANSFER_QUESTIONS = [
+        {
+          key: "t_1",
+          question: "Welk gebruikspatroon uit de tekst herken jij het meest bij jezelf?",
+          type: "multiple_choice",
+          options: [
+            "ik check vaak dezelfde apps in dezelfde volgorde",
+            "ik spaar notificaties op en kijk ze later in blokjes",
+            "ik rol vaak van de ene app naar de andere zonder plan",
+            "ik herken geen van deze"
+          ]
+        },
+        {
+          key: "t_2",
+          question: "Denk terug aan de les over de Digimeter van imec. Welk element uit die les herken je in deze tekst? Leg uit in 2 tot 3 volzinnen.",
+          type: "short_text",
+          max_length: 260
+        },
+        {
+          key: "t_3",
+          question: "Denk terug aan de video-oefening. Welk moment of inzicht uit de video herken je in deze tekst? Leg uit in 2 tot 3 volzinnen.",
+          type: "short_text",
+          max_length: 260
+        },
+        {
+          key: "t_4",
+          question: "Een klasgenoot zegt: 'Meer schermtijd is altijd slecht.' Welk antwoord past het best bij de tekst?",
+          type: "multiple_choice",
+          scored: true,
+          correct_option: "Dat hangt af van hoe je schermtijd invult en van je gebruikspatroon; minuten alleen zeggen niet alles.",
+          feedback_correct: "Juist. De tekst nuanceert: niet alleen hoeveel tijd, maar ook hoe je die tijd invult telt mee.",
+          feedback_incorrect: "Nog niet juist. De tekst zegt dat minuten alleen niet alles verklaren.",
+          options: [
+            "Dat hangt af van hoe je schermtijd invult en van je gebruikspatroon; minuten alleen zeggen niet alles.",
+            "Dat klopt volledig: meer schermtijd is per definitie altijd slechter voor iedereen.",
+            "Dat klopt niet: schermtijd heeft volgens de tekst geen invloed op slaap of aandacht.",
+            "Alleen een volledige digital detox lost dit op voor bijna iedereen."
+          ]
+        },
+        {
+          key: "t_5",
+          question: "Wat lijkt volgens jou het meest haalbaar voor jongeren: één algemeen verbod of persoonlijke afspraken per gebruiksprofiel?",
+          type: "multiple_choice",
+          options: [
+            "één algemeen verbod voor iedereen",
+            "persoonlijke afspraken op basis van gebruiksprofiel",
+            "een combinatie van beide"
+          ]
+        },
+        {
+          key: "t_6",
+          question: "Welke kleine stap wil jij deze week uitproberen? (bijv. meldingen uit, vast tijdsblok, telefoon niet mee naar bed)",
+          type: "short_text",
+          max_length: 160
+        }
+      ];
+
+      const SUMMARY_INSIGHT_QUESTIONS = [
+        {
+          key: "summary_insight_1",
+          question: "Eén nieuw inzicht uit de tekst",
+          type: "short_text",
+          max_length: 160
+        },
+        {
+          key: "summary_insight_2",
+          question: "Eén link met imec",
+          type: "short_text",
+          max_length: 160
+        },
+        {
+          key: "summary_insight_3",
+          question: "Eén link met de video",
+          type: "short_text",
+          max_length: 160
+        },
+        {
+          key: "summary_insight_4",
+          question: "Eén gewoonte die ik verder wil onderzoeken",
+          type: "short_text",
+          max_length: 160
+        }
+      ];
+
+      const GLOSSARY_ITEMS = [
+        { term: "Verband", definition: "Twee dingen komen samen voor, maar dat bewijst nog niet dat het ene het andere veroorzaakt." },
+        { term: "Causaal verband", definition: "Een situatie waarin het ene echt de oorzaak is van het andere." },
+        { term: "Melatonine", definition: "Een stofje in je lichaam dat helpt om slaperig te worden." },
+        { term: "Digibesitas", definition: "Een teveel aan digitale prikkels waar je moeilijk van kan afblijven." },
+        { term: "Digitale prikkels", definition: "Signalen zoals meldingen, likes en berichtjes die je aandacht trekken." },
+        { term: "Dopamine", definition: "Een beloningsstof in de hersenen die een prettig gevoel kan geven." },
+        { term: "Tijdsblokken", definition: "Duidelijk afgebakende momenten waarop je je toestel gebruikt." },
+        { term: "Digital detox", definition: "Een periode waarin je bewust alle digitale apparaten en technologie vermijdt." },
+        { term: "Digitaal DNA", definition: "Het idee dat iedereen een ander digitaal gebruikspatroon heeft." },
+        { term: "Gebruiksprofiel", definition: "Het patroon van hoe, wanneer en waarvoor je je smartphone gebruikt." },
+        { term: "Checkinggedrag", definition: "Gewoonte om vaak automatisch dezelfde apps of meldingen te controleren." }
+      ];
+
+      const defaultState = {
+        started: false,
+        activeStage: "intro",
+        activeChunk: "chunk_1",
+        readChunks: ["chunk_1"],
+        answers: {},
+        exportProfile: {
+          studentName: "",
+          studentClass: ""
+        }
+      };
+
+      let state = loadState();
+      const flashcards = {
+        open: false,
+        deck: GLOSSARY_ITEMS.map((_, index) => index),
+        index: 0,
+        showDefinition: false
+      };
+
+      const refs = {
+        introSection: document.getElementById("introSection"),
+        stageNav: document.getElementById("stageNav"),
+        stageTabs: document.getElementById("stageTabs"),
+        predictionSection: document.getElementById("predictionSection"),
+        readingSection: document.getElementById("readingSection"),
+        understandingSection: document.getElementById("understandingSection"),
+        transferSection: document.getElementById("transferSection"),
+        glossarySection: document.getElementById("glossarySection"),
+        summarySection: document.getElementById("summarySection"),
+        storageStatus: document.getElementById("storageStatus"),
+        progressFill: document.getElementById("progressFill"),
+        progressText: document.getElementById("progressText"),
+        startBtn: document.getElementById("startBtn"),
+        topResetBtn: document.getElementById("topResetBtn"),
+        prevStageBtn: document.getElementById("prevStageBtn"),
+        nextStageBtn: document.getElementById("nextStageBtn"),
+        predictionHelpBtn: document.getElementById("predictionHelpBtn"),
+        predictionHelpBox: document.getElementById("predictionHelpBox"),
+        understandingHelpBtn: document.getElementById("understandingHelpBtn"),
+        understandingHelpBox: document.getElementById("understandingHelpBox"),
+        transferHelpBtn: document.getElementById("transferHelpBtn"),
+        transferHelpBox: document.getElementById("transferHelpBox"),
+        predictionForm: document.getElementById("predictionForm"),
+        toReadingBtn: document.getElementById("toReadingBtn"),
+        chunkStatus: document.getElementById("chunkStatus"),
+        chunkChips: document.getElementById("chunkChips"),
+        chunkHeading: document.getElementById("chunkHeading"),
+        chunkText: document.getElementById("chunkText"),
+        prevChunkBtn: document.getElementById("prevChunkBtn"),
+        nextChunkBtn: document.getElementById("nextChunkBtn"),
+        toUnderstandingBtn: document.getElementById("toUnderstandingBtn"),
+        understandingForm: document.getElementById("understandingForm"),
+        toTransferBtn: document.getElementById("toTransferBtn"),
+        transferForm: document.getElementById("transferForm"),
+        toGlossaryBtn: document.getElementById("toGlossaryBtn"),
+        glossaryList: document.getElementById("glossaryList"),
+        toggleFlashcardsBtn: document.getElementById("toggleFlashcardsBtn"),
+        flashcardPanel: document.getElementById("flashcardPanel"),
+        flashcardCard: document.getElementById("flashcardCard"),
+        flashcardSideLabel: document.getElementById("flashcardSideLabel"),
+        flashcardMain: document.getElementById("flashcardMain"),
+        flashcardProgress: document.getElementById("flashcardProgress"),
+        flashcardPrevBtn: document.getElementById("flashcardPrevBtn"),
+        flashcardFlipBtn: document.getElementById("flashcardFlipBtn"),
+        flashcardNextBtn: document.getElementById("flashcardNextBtn"),
+        flashcardShuffleBtn: document.getElementById("flashcardShuffleBtn"),
+        toSummaryBtn: document.getElementById("toSummaryBtn"),
+        summaryInsightForm: document.getElementById("summaryInsightForm"),
+        summaryCards: document.getElementById("summaryCards"),
+        summaryStudentName: document.getElementById("summaryStudentName"),
+        summaryStudentClass: document.getElementById("summaryStudentClass"),
+        openExportModalBtn: document.getElementById("openExportModalBtn"),
+        summaryResetBtn: document.getElementById("summaryResetBtn"),
+        exportSource: document.getElementById("exportSource"),
+        exportModal: document.getElementById("exportModal"),
+        closeExportModalBtn: document.getElementById("closeExportModalBtn"),
+        savePngBtn: document.getElementById("savePngBtn"),
+        savePdfBtn: document.getElementById("savePdfBtn"),
+        exportModalStatus: document.getElementById("exportModalStatus"),
+        studentNameInput: document.getElementById("studentNameInput"),
+        studentClassInput: document.getElementById("studentClassInput")
+      };
+
+      const predictionKeys = PREDICTION_QUESTIONS.map((q) => q.key);
+      const understandingKeys = UNDERSTANDING_QUESTIONS.map((q) => q.key);
+      const transferKeys = TRANSFER_QUESTIONS.map((q) => q.key);
+      const summaryInsightKeys = SUMMARY_INSIGHT_QUESTIONS.map((q) => q.key);
+      const allAnswerKeys = [...predictionKeys, ...understandingKeys, ...transferKeys, ...summaryInsightKeys];
+
+      init();
+
+      function init() {
+        renderStageTabs();
+        renderQuestions(refs.predictionForm, PREDICTION_QUESTIONS, "prediction");
+        renderQuestions(refs.understandingForm, UNDERSTANDING_QUESTIONS, "understanding");
+        renderQuestions(refs.transferForm, TRANSFER_QUESTIONS, "transfer");
+        renderQuestions(refs.summaryInsightForm, SUMMARY_INSIGHT_QUESTIONS, "summary");
+        renderGlossary();
+        renderFlashcards();
+        renderChunkNavigator();
+        renderActiveChunk();
+        renderSummaryCards();
+        updateExportProfileDisplay();
+        populateExportModalFields();
+        bindEvents();
+        syncVisibility();
+        updateButtons();
+        updateProgress();
+        updateStorageStatus("Sessie hersteld.");
+      }
+
+      function buildFreshState() {
+        return {
+          ...defaultState,
+          readChunks: [...defaultState.readChunks],
+          answers: { ...defaultState.answers },
+          exportProfile: { ...defaultState.exportProfile }
+        };
+      }
+
+      function loadState() {
+        const raw = localStorage.getItem(APP_CONFIG.storageKey);
+        if (!raw) return buildFreshState();
+        try {
+          const parsed = JSON.parse(raw);
+          const safeChunk = READING_CHUNKS.some((chunk) => chunk.id === parsed.activeChunk) ? parsed.activeChunk : defaultState.activeChunk;
+          const safeReadChunks = Array.isArray(parsed.readChunks)
+            ? parsed.readChunks.filter((id) => READING_CHUNKS.some((chunk) => chunk.id === id))
+            : defaultState.readChunks;
+          const safeExportProfile = {
+            studentName:
+              parsed.exportProfile && typeof parsed.exportProfile.studentName === "string"
+                ? parsed.exportProfile.studentName
+                : defaultState.exportProfile.studentName,
+            studentClass:
+              parsed.exportProfile && typeof parsed.exportProfile.studentClass === "string"
+                ? parsed.exportProfile.studentClass
+                : defaultState.exportProfile.studentClass
+          };
+          return {
+            ...buildFreshState(),
+            ...parsed,
+            activeChunk: safeChunk,
+            readChunks: safeReadChunks.length ? safeReadChunks : [...defaultState.readChunks],
+            answers: { ...defaultState.answers, ...(parsed.answers || {}) },
+            exportProfile: safeExportProfile
+          };
+        } catch (error) {
+          return buildFreshState();
+        }
+      }
+
+      function saveState(reason) {
+        localStorage.setItem(APP_CONFIG.storageKey, JSON.stringify(state));
+        updateStorageStatus(reason || "Opgeslagen.");
+      }
+
+      function updateStorageStatus(message) {
+        const time = new Date().toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" });
+        refs.storageStatus.textContent = `${message} ${time}`;
+      }
+
+      function bindEvents() {
+        refs.startBtn.addEventListener("click", () => {
+          state.started = true;
+          state.activeStage = "prediction";
+          saveState("Start bewaard om");
+          syncVisibility();
+          updateButtons();
+          updateProgress();
+        });
+
+        refs.toReadingBtn.addEventListener("click", () => {
+          if (!isPredictionComplete()) return;
+          goToStage("reading");
+        });
+
+        refs.toUnderstandingBtn.addEventListener("click", () => {
+          if (!isReadingComplete()) return;
+          goToStage("understanding");
+        });
+
+        refs.toTransferBtn.addEventListener("click", () => {
+          if (!isUnderstandingComplete()) return;
+          goToStage("transfer");
+        });
+
+        refs.toGlossaryBtn.addEventListener("click", () => {
+          if (!isTransferComplete()) return;
+          goToStage("glossary");
+        });
+
+        refs.toSummaryBtn.addEventListener("click", () => {
+          goToStage("summary");
+        });
+
+        refs.toggleFlashcardsBtn.addEventListener("click", () => {
+          flashcards.open = !flashcards.open;
+          if (flashcards.open && flashcards.deck.length === 0) {
+            flashcards.deck = GLOSSARY_ITEMS.map((_, index) => index);
+          }
+          renderFlashcards();
+        });
+
+        refs.flashcardCard.addEventListener("click", () => {
+          flipFlashcard();
+        });
+
+        refs.flashcardCard.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          flipFlashcard();
+        });
+
+        refs.flashcardFlipBtn.addEventListener("click", () => {
+          flipFlashcard();
+        });
+
+        refs.flashcardPrevBtn.addEventListener("click", () => {
+          moveFlashcard(-1);
+        });
+
+        refs.flashcardNextBtn.addEventListener("click", () => {
+          moveFlashcard(1);
+        });
+
+        refs.flashcardShuffleBtn.addEventListener("click", () => {
+          shuffleFlashcards();
+        });
+
+        refs.topResetBtn.addEventListener("click", resetAll);
+        refs.summaryResetBtn.addEventListener("click", resetAll);
+
+        refs.prevStageBtn.addEventListener("click", () => {
+          const stages = getVisibleStageIds();
+          const index = stages.indexOf(state.activeStage);
+          if (index > 0) goToStage(stages[index - 1]);
+        });
+
+        refs.nextStageBtn.addEventListener("click", () => {
+          const stages = getVisibleStageIds();
+          const index = stages.indexOf(state.activeStage);
+          if (index !== -1 && index < stages.length - 1) goToStage(stages[index + 1]);
+        });
+
+        refs.prevChunkBtn.addEventListener("click", () => {
+          const index = READING_CHUNKS.findIndex((chunk) => chunk.id === state.activeChunk);
+          if (index <= 0) return;
+          setActiveChunk(READING_CHUNKS[index - 1].id);
+        });
+
+        refs.nextChunkBtn.addEventListener("click", () => {
+          const index = READING_CHUNKS.findIndex((chunk) => chunk.id === state.activeChunk);
+          if (index === -1 || index >= READING_CHUNKS.length - 1) return;
+          setActiveChunk(READING_CHUNKS[index + 1].id);
+        });
+
+        refs.openExportModalBtn.addEventListener("click", () => {
+          populateExportModalFields();
+          refs.exportModal.classList.remove("hidden");
+          refs.exportModal.setAttribute("aria-hidden", "false");
+          refs.exportModalStatus.textContent = "";
+          refs.studentNameInput.focus();
+        });
+
+        refs.closeExportModalBtn.addEventListener("click", closeExportModal);
+        refs.exportModal.querySelector(".modal-backdrop").addEventListener("click", closeExportModal);
+
+        refs.savePngBtn.addEventListener("click", () => {
+          exportAsPng();
+        });
+
+        refs.savePdfBtn.addEventListener("click", () => {
+          exportAsPdf();
+        });
+
+        refs.studentNameInput.addEventListener("input", () => {
+          state.exportProfile.studentName = refs.studentNameInput.value;
+          saveState("Leerlinggegevens bewaard om");
+          updateExportProfileDisplay();
+          refs.exportModalStatus.textContent = "";
+        });
+
+        refs.studentClassInput.addEventListener("input", () => {
+          state.exportProfile.studentClass = refs.studentClassInput.value;
+          saveState("Leerlinggegevens bewaard om");
+          updateExportProfileDisplay();
+          refs.exportModalStatus.textContent = "";
+        });
+
+        bindHelpToggle(refs.predictionHelpBtn, refs.predictionHelpBox);
+        bindHelpToggle(refs.understandingHelpBtn, refs.understandingHelpBox);
+        bindHelpToggle(refs.transferHelpBtn, refs.transferHelpBox);
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape" && !refs.exportModal.classList.contains("hidden")) closeExportModal();
+        });
+      }
+
+      function bindHelpToggle(button, box) {
+        button.addEventListener("click", () => {
+          const open = !box.classList.contains("hidden");
+          box.classList.toggle("hidden", open);
+          button.setAttribute("aria-expanded", String(!open));
+        });
+      }
+
+      function closeExportModal() {
+        refs.exportModal.classList.add("hidden");
+        refs.exportModal.setAttribute("aria-hidden", "true");
+      }
+
+      function populateExportModalFields() {
+        refs.studentNameInput.value = state.exportProfile.studentName || "";
+        refs.studentClassInput.value = state.exportProfile.studentClass || "";
+      }
+
+      function updateExportProfileDisplay() {
+        const name = (state.exportProfile.studentName || "").trim();
+        const className = (state.exportProfile.studentClass || "").trim();
+        refs.summaryStudentName.textContent = name || "Nog niet ingevuld";
+        refs.summaryStudentClass.textContent = className || "Nog niet ingevuld";
+      }
+
+      function requireExportProfile() {
+        const studentName = refs.studentNameInput.value.trim();
+        const studentClass = refs.studentClassInput.value.trim();
+
+        if (!studentName || !studentClass) {
+          refs.exportModalStatus.textContent = "Vul eerst je naam en klas in.";
+          if (!studentName) refs.studentNameInput.focus();
+          else refs.studentClassInput.focus();
+          return null;
+        }
+
+        state.exportProfile.studentName = studentName;
+        state.exportProfile.studentClass = studentClass;
+        saveState("Leerlinggegevens bewaard om");
+        updateExportProfileDisplay();
+        return { studentName, studentClass };
+      }
+
+      function sanitizeFilePart(value, fallback) {
+        const cleaned = String(value || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 42);
+        return cleaned || fallback;
+      }
+
+      function getExportFilenameBase(profile) {
+        const namePart = sanitizeFilePart(profile.studentName, "leerling");
+        const classPart = sanitizeFilePart(profile.studentClass, "klas");
+        return `mijn_schermen_en_ik_leesopdracht_${namePart}_${classPart}`;
+      }
+
+      function resetAll() {
+        const confirmed = window.confirm("Wil je echt alle antwoorden resetten?");
+        if (!confirmed) return;
+        state = buildFreshState();
+        resetFlashcards();
+        saveState("Reset uitgevoerd om");
+        renderStageTabs();
+        renderQuestions(refs.predictionForm, PREDICTION_QUESTIONS, "prediction");
+        renderQuestions(refs.understandingForm, UNDERSTANDING_QUESTIONS, "understanding");
+        renderQuestions(refs.transferForm, TRANSFER_QUESTIONS, "transfer");
+        renderQuestions(refs.summaryInsightForm, SUMMARY_INSIGHT_QUESTIONS, "summary");
+        renderChunkNavigator();
+        renderActiveChunk();
+        renderSummaryCards();
+        updateExportProfileDisplay();
+        populateExportModalFields();
+        syncVisibility();
+        updateButtons();
+        updateProgress();
+        closeExportModal();
+      }
+
+      function resetFlashcards() {
+        flashcards.open = false;
+        flashcards.deck = GLOSSARY_ITEMS.map((_, index) => index);
+        flashcards.index = 0;
+        flashcards.showDefinition = false;
+        renderFlashcards();
+      }
+
+      function setActiveChunk(chunkId) {
+        state.activeChunk = chunkId;
+        if (!state.readChunks.includes(chunkId)) state.readChunks.push(chunkId);
+        saveState("Leesdeel bewaard om");
+        renderChunkNavigator();
+        renderActiveChunk();
+        updateButtons();
+        updateProgress();
+      }
+
+      function goToStage(stageId) {
+        if (!isStageUnlocked(stageId)) return;
+        state.activeStage = stageId;
+        saveState("Sectie gewijzigd om");
+        syncVisibility();
+        updateButtons();
+      }
+
+      function syncVisibility() {
+        normalizeActiveStage();
+        const stage = state.activeStage;
+
+        refs.stageNav.classList.toggle("hidden", !state.started || stage === "intro");
+        refs.introSection.classList.toggle("hidden", stage !== "intro");
+        refs.predictionSection.classList.toggle("hidden", stage !== "prediction");
+        refs.readingSection.classList.toggle("hidden", stage !== "reading");
+        refs.understandingSection.classList.toggle("hidden", stage !== "understanding");
+        refs.transferSection.classList.toggle("hidden", stage !== "transfer");
+        refs.glossarySection.classList.toggle("hidden", stage !== "glossary");
+        refs.summarySection.classList.toggle("hidden", stage !== "summary");
+      }
+
+      function normalizeActiveStage() {
+        const valid = ["intro", ...STAGES.map((stage) => stage.id)];
+        if (!valid.includes(state.activeStage)) {
+          state.activeStage = state.started ? "prediction" : "intro";
+        }
+
+        if (!state.started) {
+          state.activeStage = "intro";
+          return;
+        }
+
+        if (state.activeStage === "intro") {
+          state.activeStage = "prediction";
+        }
+
+        if (!isStageUnlocked(state.activeStage)) {
+          state.activeStage = getVisibleStageIds().slice(-1)[0] || "prediction";
+        }
+      }
+
+      function updateButtons() {
+        refs.toReadingBtn.disabled = !isPredictionComplete();
+        refs.toUnderstandingBtn.disabled = !isReadingComplete();
+        refs.toTransferBtn.disabled = !isUnderstandingComplete();
+        refs.toGlossaryBtn.disabled = !isTransferComplete();
+
+        const chunkIndex = READING_CHUNKS.findIndex((chunk) => chunk.id === state.activeChunk);
+        refs.prevChunkBtn.disabled = chunkIndex <= 0;
+        refs.nextChunkBtn.disabled = chunkIndex === -1 || chunkIndex >= READING_CHUNKS.length - 1;
+
+        const visibleStages = getVisibleStageIds();
+        const activeIndex = visibleStages.indexOf(state.activeStage);
+        refs.prevStageBtn.disabled = activeIndex <= 0;
+        refs.nextStageBtn.disabled = activeIndex === -1 || activeIndex >= visibleStages.length - 1;
+
+        renderStageTabs();
+      }
+
+      function updateProgress() {
+        const answered = allAnswerKeys.filter((key) => isAnswered(key)).length;
+        const readParts = state.readChunks.length;
+        const totalUnits = allAnswerKeys.length + READING_CHUNKS.length;
+        const completedUnits = answered + readParts;
+        const percent = totalUnits === 0 ? 0 : Math.round((completedUnits / totalUnits) * 100);
+
+        refs.progressFill.style.width = `${percent}%`;
+        refs.progressText.textContent = `Voortgang: ${percent}% (${completedUnits}/${totalUnits})`;
+      }
+
+      function isAnswered(key) {
+        const value = state.answers[key];
+        if (Array.isArray(value)) return value.length > 0;
+        if (typeof value === "string") return value.trim().length > 0;
+        return false;
+      }
+
+      function isPredictionComplete() {
+        return predictionKeys.every((key) => isAnswered(key));
+      }
+
+      function isReadingComplete() {
+        return state.readChunks.length >= READING_CHUNKS.length;
+      }
+
+      function isUnderstandingComplete() {
+        return understandingKeys.every((key) => isAnswered(key));
+      }
+
+      function isTransferComplete() {
+        return transferKeys.every((key) => isAnswered(key));
+      }
+
+      function isStageUnlocked(stageId) {
+        if (stageId === "intro") return true;
+        if (stageId === "prediction") return state.started;
+        if (stageId === "reading") return isPredictionComplete();
+        if (stageId === "understanding") return isReadingComplete();
+        if (stageId === "transfer") return isUnderstandingComplete();
+        if (stageId === "glossary") return isTransferComplete();
+        if (stageId === "summary") return isTransferComplete();
+        return false;
+      }
+
+      function getVisibleStageIds() {
+        return STAGES.map((stage) => stage.id).filter((id) => isStageUnlocked(id));
+      }
+
+      function renderStageTabs() {
+        refs.stageTabs.innerHTML = "";
+        STAGES.forEach((stage) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "stage-tab";
+          btn.textContent = stage.label;
+          btn.disabled = !isStageUnlocked(stage.id);
+          btn.classList.toggle("active", state.activeStage === stage.id);
+          btn.addEventListener("click", () => goToStage(stage.id));
+          refs.stageTabs.appendChild(btn);
+        });
+      }
+
+      function renderChunkNavigator() {
+        refs.chunkChips.innerHTML = "";
+        READING_CHUNKS.forEach((chunk, index) => {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "chip";
+          chip.textContent = `${index + 1}. ${chunk.heading}`;
+          chip.classList.toggle("active", chunk.id === state.activeChunk);
+          chip.classList.toggle("read", state.readChunks.includes(chunk.id));
+          chip.addEventListener("click", () => setActiveChunk(chunk.id));
+          refs.chunkChips.appendChild(chip);
+        });
+      }
+
+      function renderActiveChunk() {
+        const chunk = READING_CHUNKS.find((item) => item.id === state.activeChunk) || READING_CHUNKS[0];
+        refs.chunkHeading.textContent = chunk.heading;
+        refs.chunkText.textContent = chunk.text;
+        refs.chunkStatus.textContent = `Gelezen: ${state.readChunks.length}/${READING_CHUNKS.length}`;
+      }
+
+      function renderGlossary() {
+        refs.glossaryList.innerHTML = "";
+        GLOSSARY_ITEMS.forEach((item) => {
+          const details = document.createElement("details");
+          details.className = "glossary-item";
+          const summary = document.createElement("summary");
+          summary.textContent = item.term;
+          const text = document.createElement("p");
+          text.textContent = item.definition;
+          details.appendChild(summary);
+          details.appendChild(text);
+          refs.glossaryList.appendChild(details);
+        });
+      }
+
+      function renderFlashcards() {
+        refs.flashcardPanel.classList.toggle("hidden", !flashcards.open);
+        refs.toggleFlashcardsBtn.textContent = flashcards.open ? "Sluit flashcards" : "Maak flashcards";
+
+        if (!flashcards.open) return;
+        if (flashcards.deck.length === 0) {
+          refs.flashcardSideLabel.textContent = "Term";
+          refs.flashcardMain.textContent = "Geen kaarten beschikbaar.";
+          refs.flashcardProgress.textContent = "";
+          refs.flashcardCard.setAttribute("aria-pressed", "false");
+          return;
+        }
+
+        const cardIndex = flashcards.deck[flashcards.index];
+        const card = GLOSSARY_ITEMS[cardIndex];
+        refs.flashcardSideLabel.textContent = flashcards.showDefinition ? "Uitleg" : "Term";
+        refs.flashcardMain.textContent = flashcards.showDefinition ? card.definition : card.term;
+        refs.flashcardProgress.textContent = `Kaart ${flashcards.index + 1} van ${flashcards.deck.length}`;
+        refs.flashcardCard.setAttribute("aria-pressed", String(flashcards.showDefinition));
+      }
+
+      function flipFlashcard() {
+        if (!flashcards.open) return;
+        flashcards.showDefinition = !flashcards.showDefinition;
+        renderFlashcards();
+      }
+
+      function moveFlashcard(direction) {
+        if (!flashcards.open || flashcards.deck.length === 0) return;
+        const total = flashcards.deck.length;
+        flashcards.index = (flashcards.index + direction + total) % total;
+        flashcards.showDefinition = false;
+        renderFlashcards();
+      }
+
+      function shuffleFlashcards() {
+        if (!flashcards.open || flashcards.deck.length <= 1) return;
+        const shuffled = [...flashcards.deck];
+        for (let i = shuffled.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        flashcards.deck = shuffled;
+        flashcards.index = 0;
+        flashcards.showDefinition = false;
+        renderFlashcards();
+      }
+
+      function renderQuestions(container, questions, namespace) {
+        container.innerHTML = "";
+        questions.forEach((question) => {
+          container.appendChild(createQuestionCard(question, namespace));
+        });
+      }
+
+      function createQuestionCard(question, namespace) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "q-card";
+
+        if (question.type === "multiple_choice") {
+          wrapper.appendChild(createMultipleChoice(question, namespace));
+        } else if (question.type === "short_text") {
+          wrapper.appendChild(createShortText(question, namespace));
+        } else if (question.type === "checkbox") {
+          wrapper.appendChild(createCheckbox(question, namespace));
+        }
+
+        return wrapper;
+      }
+
+      function createQuestionHelpElements(question, namespace) {
+        if (!question.help_text) {
+          return { button: null, box: null };
+        }
+
+        const helpId = `${namespace}-${question.key}-help`;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "q-help-btn no-print";
+        button.textContent = "?";
+        button.setAttribute("aria-expanded", "false");
+        button.setAttribute("aria-controls", helpId);
+        button.setAttribute("aria-label", "Toelichting bij deze vraag");
+
+        const box = document.createElement("p");
+        box.id = helpId;
+        box.className = "q-help-box hidden";
+        box.textContent = question.help_text;
+
+        button.addEventListener("click", () => {
+          const isOpen = !box.classList.contains("hidden");
+          box.classList.toggle("hidden", isOpen);
+          button.setAttribute("aria-expanded", String(!isOpen));
+        });
+
+        return { button, box };
+      }
+
+      function createMultipleChoice(question, namespace) {
+        const fieldset = document.createElement("fieldset");
+        const legend = document.createElement("legend");
+        legend.className = "q-legend-row";
+        const title = document.createElement("span");
+        title.className = "q-title-text";
+        title.textContent = question.question;
+        legend.appendChild(title);
+
+        const help = createQuestionHelpElements(question, namespace);
+        if (help.button) legend.appendChild(help.button);
+        fieldset.appendChild(legend);
+        if (help.box) fieldset.appendChild(help.box);
+
+        const options = document.createElement("div");
+        options.className = "options";
+        const feedback = createScoredFeedbackElement(question);
+
+        question.options.forEach((option, index) => {
+          const id = `${namespace}-${question.key}-${index}`;
+          const label = document.createElement("label");
+          label.className = "option";
+
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = `${namespace}-${question.key}`;
+          input.id = id;
+          input.value = option;
+          input.checked = state.answers[question.key] === option;
+
+          input.addEventListener("change", () => {
+            state.answers[question.key] = option;
+            handleAnswerUpdate();
+            updateScoredFeedback(question, feedback);
+          });
+
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(option));
+          options.appendChild(label);
+        });
+
+        fieldset.appendChild(options);
+        if (feedback) {
+          fieldset.appendChild(feedback);
+          updateScoredFeedback(question, feedback);
+        }
+        return fieldset;
+      }
+
+      function createCheckbox(question, namespace) {
+        const fieldset = document.createElement("fieldset");
+        const legend = document.createElement("legend");
+        legend.className = "q-legend-row";
+        const title = document.createElement("span");
+        title.className = "q-title-text";
+        title.textContent = question.question;
+        legend.appendChild(title);
+
+        const help = createQuestionHelpElements(question, namespace);
+        if (help.button) legend.appendChild(help.button);
+        fieldset.appendChild(legend);
+        if (help.box) fieldset.appendChild(help.box);
+
+        const options = document.createElement("div");
+        options.className = "options";
+        const current = Array.isArray(state.answers[question.key]) ? state.answers[question.key] : [];
+        const feedback = createScoredFeedbackElement(question);
+
+        question.options.forEach((option, index) => {
+          const id = `${namespace}-${question.key}-${index}`;
+          const label = document.createElement("label");
+          label.className = "option";
+
+          const input = document.createElement("input");
+          input.type = "checkbox";
+          input.id = id;
+          input.value = option;
+          input.checked = current.includes(option);
+
+          input.addEventListener("change", () => {
+            const values = Array.isArray(state.answers[question.key]) ? [...state.answers[question.key]] : [];
+            if (input.checked && !values.includes(option)) values.push(option);
+            state.answers[question.key] = input.checked ? values : values.filter((item) => item !== option);
+            handleAnswerUpdate();
+            updateScoredFeedback(question, feedback);
+          });
+
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(option));
+          options.appendChild(label);
+        });
+
+        fieldset.appendChild(options);
+        if (feedback) {
+          fieldset.appendChild(feedback);
+          updateScoredFeedback(question, feedback);
+        }
+        return fieldset;
+      }
+
+      function createShortText(question, namespace) {
+        const fieldset = document.createElement("fieldset");
+        const inputId = `${namespace}-${question.key}`;
+
+        const labelRow = document.createElement("div");
+        labelRow.className = "q-label-row";
+        const label = document.createElement("label");
+        label.className = "q-label";
+        label.htmlFor = inputId;
+        label.textContent = question.question;
+        labelRow.appendChild(label);
+
+        const help = createQuestionHelpElements(question, namespace);
+        if (help.button) labelRow.appendChild(help.button);
+        fieldset.appendChild(labelRow);
+        if (help.box) fieldset.appendChild(help.box);
+
+        const textarea = document.createElement("textarea");
+        textarea.className = "short-text";
+        textarea.id = inputId;
+        textarea.rows = 3;
+        textarea.maxLength = question.max_length || 180;
+        textarea.value = state.answers[question.key] || "";
+
+        const counter = document.createElement("p");
+        counter.className = "counter";
+        counter.textContent = `${textarea.value.length}/${textarea.maxLength}`;
+
+        textarea.addEventListener("input", () => {
+          state.answers[question.key] = textarea.value;
+          counter.textContent = `${textarea.value.length}/${textarea.maxLength}`;
+          handleAnswerUpdate();
+        });
+
+        fieldset.appendChild(textarea);
+        fieldset.appendChild(counter);
+        return fieldset;
+      }
+
+      function createScoredFeedbackElement(question) {
+        if (!question.scored) return null;
+        const feedback = document.createElement("p");
+        feedback.className = "answer-feedback hidden";
+        feedback.setAttribute("aria-live", "polite");
+        return feedback;
+      }
+
+      function updateScoredFeedback(question, feedbackElement) {
+        if (!feedbackElement) return;
+        const result = evaluateScoredQuestion(question);
+        if (!result) {
+          feedbackElement.className = "answer-feedback hidden";
+          feedbackElement.textContent = "";
+          return;
+        }
+        feedbackElement.className = `answer-feedback ${result.status}`;
+        feedbackElement.textContent = result.message;
+      }
+
+      function evaluateScoredQuestion(question) {
+        if (question.type === "multiple_choice") {
+          const answer = typeof state.answers[question.key] === "string" ? state.answers[question.key] : "";
+          if (!answer.trim()) return null;
+          const isCorrect = answer === question.correct_option;
+          return {
+            status: isCorrect ? "correct" : "incorrect",
+            message: isCorrect
+              ? question.feedback_correct || "Juist."
+              : question.feedback_incorrect || `Niet juist. Correct antwoord: ${question.correct_option}`
+          };
+        }
+
+        if (question.type === "checkbox") {
+          const selected = Array.isArray(state.answers[question.key]) ? [...new Set(state.answers[question.key])] : [];
+          if (selected.length === 0) return null;
+          const correctOptions = Array.isArray(question.correct_options) ? question.correct_options : [];
+          const hasWrongSelection = selected.some((value) => !correctOptions.includes(value));
+          const missingCount = correctOptions.filter((value) => !selected.includes(value)).length;
+
+          if (!hasWrongSelection && missingCount === 0) {
+            return {
+              status: "correct",
+              message: question.feedback_correct || "Juist."
+            };
+          }
+
+          if (!hasWrongSelection && missingCount > 0) {
+            return {
+              status: "partial",
+              message: question.feedback_partial || "Bijna juist. Kijk of je nog een optie mist."
+            };
+          }
+
+          return {
+            status: "incorrect",
+            message: question.feedback_incorrect || "Nog niet juist. Herlees de tekst en probeer opnieuw."
+          };
+        }
+
+        return null;
+      }
+
+      function handleAnswerUpdate() {
+        saveState("Autosave om");
+        renderSummaryCards();
+        updateButtons();
+        updateProgress();
+      }
+
+      function renderSummaryCards() {
+        const html = [
+          buildSummaryCard("Voorspellingen", PREDICTION_QUESTIONS),
+          buildSummaryCard("Begrip", UNDERSTANDING_QUESTIONS),
+          buildSummaryCard("Transfer", TRANSFER_QUESTIONS),
+          buildInsightCard()
+        ];
+        refs.summaryCards.innerHTML = html.join("");
+      }
+
+      function buildSummaryCard(title, questions) {
+        const items = questions.map((question) => {
+          return `<li><strong>${escapeHtml(question.question)}</strong><br />${formatAnswer(question.key)}</li>`;
+        });
+
+        return `
+          <article class="summary-card">
+            <h3>${escapeHtml(title)}</h3>
+            <ul class="summary-list">
+              ${items.join("")}
+            </ul>
+          </article>
+        `;
+      }
+
+      function buildInsightCard() {
+        return `
+          <article class="summary-card">
+            <h3>Kerninzichten</h3>
+            <ul class="summary-list">
+              <li><strong>Eén nieuw inzicht:</strong><br />${formatAnswer("summary_insight_1")}</li>
+              <li><strong>Eén link met imec:</strong><br />${formatAnswer("summary_insight_2")}</li>
+              <li><strong>Eén link met de video:</strong><br />${formatAnswer("summary_insight_3")}</li>
+              <li><strong>Eén gewoonte om te onderzoeken:</strong><br />${formatAnswer("summary_insight_4")}</li>
+            </ul>
+          </article>
+        `;
+      }
+
+      function formatAnswer(key) {
+        const value = state.answers[key];
+        if (Array.isArray(value)) return value.length ? escapeHtml(value.join(", ")) : "Nog niet ingevuld";
+        if (typeof value === "string" && value.trim().length > 0) return escapeHtml(value.trim());
+        return "Nog niet ingevuld";
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      async function exportAsPng() {
+        const profile = requireExportProfile();
+        if (!profile) return;
+
+        if (typeof window.html2canvas !== "function") {
+          refs.exportModalStatus.textContent = "PNG-export is niet beschikbaar.";
+          return;
+        }
+
+        refs.exportModalStatus.textContent = "PNG wordt gemaakt...";
+        const canvas = await window.html2canvas(refs.exportSource, {
+          scale: 2,
+          backgroundColor: "#f8f7f3",
+          useCORS: true
+        });
+
+        const fileBase = getExportFilenameBase(profile);
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/png");
+        link.download = `${fileBase}.png`;
+        link.click();
+        refs.exportModalStatus.textContent = "PNG opgeslagen.";
+      }
+
+      async function exportAsPdf() {
+        const profile = requireExportProfile();
+        if (!profile) return;
+
+        if (typeof window.html2canvas !== "function" || !window.jspdf || !window.jspdf.jsPDF) {
+          refs.exportModalStatus.textContent = "PDF-export is niet beschikbaar.";
+          return;
+        }
+
+        refs.exportModalStatus.textContent = "PDF wordt gemaakt...";
+        const canvas = await window.html2canvas(refs.exportSource, {
+          scale: 2,
+          backgroundColor: "#f8f7f3",
+          useCORS: true
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new window.jspdf.jsPDF("p", "mm", "a4");
+        const margin = 10;
+        const pageWidth = 210;
+        const pageHeight = 297;
+        const printableWidth = pageWidth - margin * 2;
+        const printableHeight = pageHeight - margin * 2;
+        const imageHeight = (canvas.height * printableWidth) / canvas.width;
+
+        let heightLeft = imageHeight;
+        let position = margin;
+
+        pdf.addImage(imgData, "PNG", margin, position, printableWidth, imageHeight);
+        heightLeft -= printableHeight;
+
+        while (heightLeft > 0) {
+          position = heightLeft - imageHeight + margin;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", margin, position, printableWidth, imageHeight);
+          heightLeft -= printableHeight;
+        }
+
+        const fileBase = getExportFilenameBase(profile);
+        pdf.save(`${fileBase}.pdf`);
+        refs.exportModalStatus.textContent = "PDF opgeslagen.";
+      }
+    </script>
+    <script>
+      (function () {
+        const btn = document.getElementById("globalMenuBtn");
+        const closeBtn = document.getElementById("globalMenuCloseBtn");
+        const drawer = document.getElementById("globalMenuDrawer");
+        const backdrop = document.getElementById("globalMenuBackdrop");
+        if (!btn || !closeBtn || !drawer || !backdrop) return;
+
+        function openMenu() {
+          drawer.classList.remove("hidden");
+          backdrop.classList.remove("hidden");
+          requestAnimationFrame(() => drawer.classList.add("open"));
+          btn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMenu() {
+          drawer.classList.remove("open");
+          backdrop.classList.add("hidden");
+          btn.setAttribute("aria-expanded", "false");
+          setTimeout(() => drawer.classList.add("hidden"), 180);
+        }
+
+        btn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", closeMenu);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeMenu();
+        });
+      })();
+    </script>
+  </body>
+</html>

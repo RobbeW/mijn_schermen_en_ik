@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="nl-BE">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mijn schermen en ik - Startpagina</title>
+    <style>
+      :root {
+        --brand-primary: #5200ff;
+        --brand-secondary: #03ddef;
+        --bg: #f8f7f3;
+        --surface: #ffffff;
+        --text: #111111;
+        --muted: #555555;
+        --border: #d9d4f5;
+        --radius: 16px;
+        --shadow: 0 10px 26px rgba(25, 8, 82, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Roboto, Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at 10% 8%, #ffffff 0%, rgba(255, 255, 255, 0) 42%),
+          linear-gradient(140deg, #f5f3ff 0%, #f8f7f3 52%, #edfafd 100%);
+      }
+
+      .app {
+        width: min(1080px, 94vw);
+        margin: 20px auto 36px;
+      }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        padding: 20px;
+        color: #f4f5ff;
+        background: linear-gradient(120deg, #5200ff 0%, #3926b8 58%, #03ddef 100%);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.4rem, 3.6vw, 2.1rem);
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        color: #e3e5ff;
+        font-size: 0.96rem;
+      }
+
+      .section {
+        margin-top: 14px;
+        padding: 16px;
+      }
+
+      .instruction {
+        margin: 8px 0 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+      }
+
+      .path-grid {
+        margin-top: 12px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .path-card {
+        border: 1px solid #e2ddf9;
+        border-radius: 12px;
+        padding: 12px;
+        background: #fff;
+      }
+
+      .step {
+        display: inline-block;
+        font-size: 0.82rem;
+        font-weight: 700;
+        color: #2c1d7a;
+        background: #efe9ff;
+        border: 1px solid #d6cbff;
+        border-radius: 999px;
+        padding: 4px 9px;
+      }
+
+      .path-card h2 {
+        margin: 8px 0 0;
+        font-size: 1.02rem;
+      }
+
+      .path-card p {
+        margin: 6px 0 0;
+        color: #4f4f63;
+        font-size: 0.9rem;
+      }
+
+      .actions {
+        margin-top: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .btn {
+        border: 1px solid transparent;
+        border-radius: 12px;
+        padding: 10px 14px;
+        font: inherit;
+        font-weight: 700;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-primary {
+        color: #fff;
+        background: var(--brand-primary);
+        border-color: var(--brand-primary);
+      }
+
+      .btn-secondary {
+        color: #322f53;
+        background: #fff;
+        border-color: #d1caf5;
+      }
+
+      .footer {
+        margin-top: 14px;
+        text-align: center;
+        color: #5f5f5f;
+        font-size: 0.82rem;
+      }
+
+      .global-menu-btn {
+        position: fixed;
+        top: 12px;
+        left: 12px;
+        z-index: 1300;
+        width: 44px;
+        height: 44px;
+        border: 1px solid #cec7f4;
+        border-radius: 12px;
+        background: #ffffff;
+        color: #341098;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(25, 8, 82, 0.14);
+      }
+
+      .global-menu-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 1290;
+        background: rgba(16, 12, 38, 0.36);
+      }
+
+      .global-menu-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1310;
+        width: min(320px, 86vw);
+        height: 100vh;
+        background: #fff;
+        border-right: 1px solid #ddd6fb;
+        box-shadow: 0 18px 36px rgba(24, 11, 63, 0.22);
+        padding: 14px;
+        transform: translateX(-105%);
+        transition: transform 180ms ease;
+      }
+
+      .global-menu-drawer.open {
+        transform: translateX(0);
+      }
+
+      .global-menu-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .global-menu-head h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: #28196d;
+      }
+
+      .global-menu-close {
+        border: 1px solid #d7cff7;
+        background: #f5f2ff;
+        color: #3f0ec9;
+        border-radius: 10px;
+        width: 34px;
+        height: 34px;
+        cursor: pointer;
+      }
+
+      .global-menu-links {
+        margin-top: 12px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .global-menu-links a {
+        text-decoration: none;
+        color: #2f2c4c;
+        font-weight: 600;
+        border: 1px solid #ddd7f8;
+        border-radius: 10px;
+        padding: 9px 10px;
+        background: #fcfbff;
+      }
+
+      .global-menu-links a.active {
+        border-color: #5200ff;
+        background: #efe9ff;
+        color: #2a0d77;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @media (max-width: 780px) {
+        .path-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          flex-direction: column;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button id="globalMenuBtn" class="global-menu-btn" type="button" aria-label="Open menu" aria-expanded="false">☰</button>
+    <div id="globalMenuBackdrop" class="global-menu-backdrop hidden"></div>
+    <nav id="globalMenuDrawer" class="global-menu-drawer hidden" aria-label="Projectmenu">
+      <div class="global-menu-head">
+        <h2>Mijn schermen en ik</h2>
+        <button id="globalMenuCloseBtn" class="global-menu-close" type="button" aria-label="Sluit menu">✕</button>
+      </div>
+      <div class="global-menu-links">
+        <a class="active" href="index.html">Startpagina</a>
+        <a href="imec_reflectiedashboard/imec.html">imec reflectiedashboard</a>
+        <a href="mijn_schermen_en_ik_video_prevragen/index.html">Video-opdracht</a>
+        <a href="mijn_schermen_en_ik_vrt_leesopdracht/index.html">Leesopdracht</a>
+        <a href="posteropdracht_schermtijd_acties/index.html">Posteropdracht</a>
+      </div>
+    </nav>
+
+    <main class="app">
+      <header class="hero card">
+        <h1>Mijn schermen en ik</h1>
+        <p class="subtitle">Start hier. Deze pagina geeft je het overzicht en de volgorde van de volledige lesreeks.</p>
+      </header>
+
+      <section class="section card">
+        <h2>Jouw leerpad</h2>
+        <p class="instruction">Werk in deze volgorde. Elke stap bouwt voort op de vorige.</p>
+        <div class="path-grid">
+          <article class="path-card">
+            <span class="step">Stap 1</span>
+            <h2>imec-context en zelfreflectie</h2>
+            <p>Vergelijk je antwoorden met bredere cijfers en reflecteer op tijd, focus, slaap en controle.</p>
+          </article>
+          <article class="path-card">
+            <span class="step">Stap 2</span>
+            <h2>Video-opdracht</h2>
+            <p>Bekijk de video in segmenten en noteer wat je herkent of waar je vragen bij hebt.</p>
+          </article>
+          <article class="path-card">
+            <span class="step">Stap 3</span>
+            <h2>Leesopdracht</h2>
+            <p>Lees over schermtijd, digitale prikkels en digitaal DNA, en koppel dit aan eerdere opdrachten.</p>
+          </article>
+          <article class="path-card">
+            <span class="step">Stap 4</span>
+            <h2>Posteropdracht</h2>
+            <p>Werk 5 concrete acties uit en zet je plan klaar voor je poster in Canva.</p>
+          </article>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary" href="imec_reflectiedashboard/imec.html">Start met stap 1</a>
+          <a class="btn btn-secondary" href="posteropdracht_schermtijd_acties/index.html">Ga direct naar de slotopdracht</a>
+        </div>
+      </section>
+
+      <footer class="footer">© Robbe Wulgaert · AI in de Klas · aiindeklas.be / robbewulgaert.be</footer>
+    </main>
+
+    <script>
+      (function () {
+        const btn = document.getElementById("globalMenuBtn");
+        const closeBtn = document.getElementById("globalMenuCloseBtn");
+        const drawer = document.getElementById("globalMenuDrawer");
+        const backdrop = document.getElementById("globalMenuBackdrop");
+        if (!btn || !closeBtn || !drawer || !backdrop) return;
+
+        function openMenu() {
+          drawer.classList.remove("hidden");
+          backdrop.classList.remove("hidden");
+          requestAnimationFrame(() => drawer.classList.add("open"));
+          btn.setAttribute("aria-expanded", "true");
+        }
+
+        function closeMenu() {
+          drawer.classList.remove("open");
+          backdrop.classList.add("hidden");
+          btn.setAttribute("aria-expanded", "false");
+          setTimeout(() => drawer.classList.add("hidden"), 180);
+        }
+
+        btn.addEventListener("click", openMenu);
+        closeBtn.addEventListener("click", closeMenu);
+        backdrop.addEventListener("click", closeMenu);
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") closeMenu();
+        });
+      })();
+    </script>
+  </body>
+</html>
