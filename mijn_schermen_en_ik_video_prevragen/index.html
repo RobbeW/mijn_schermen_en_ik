@@ -522,7 +522,8 @@
         aspect-ratio: 16 / 9;
       }
 
-      .video-frame iframe {
+      .video-frame iframe,
+      .video-frame #lessonVideo {
         width: 100%;
         height: 100%;
         border: 0;
@@ -570,6 +571,7 @@
         align-items: center;
         gap: 8px;
         margin-top: 2px;
+        flex-wrap: wrap;
       }
 
       .timestamp-status {
@@ -807,7 +809,6 @@
         }
       }
 
-      /* Harmonisatie met leesopdracht-stijl */
       :root {
         --brand-primary: #5200ff;
         --brand-secondary: #03ddef;
@@ -1011,6 +1012,7 @@
         <a href="../posteropdracht_schermtijd_acties/index.html">Posteropdracht</a>
       </div>
     </nav>
+
     <main class="app">
       <header class="topbar card">
         <div class="topbar-row">
@@ -1092,15 +1094,9 @@
         <div class="workspace">
           <article class="video-card card">
             <div id="videoEmbedContainer" class="video-frame">
-              <iframe
-                id="lessonVideo"
-                title="Mijn schermen en ik video"
-                src="about:blank"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin"
-                allowfullscreen
-              ></iframe>
+              <div id="lessonVideo" aria-label="Mijn schermen en ik video"></div>
             </div>
+
             <div id="fileModeVideoFallback" class="video-fallback hidden">
               <p>Deze browser blokkeert YouTube-embed in lokale file-modus. Open de video op dit segment.</p>
               <div class="fallback-actions">
@@ -1114,6 +1110,8 @@
               <div class="timestamp-row no-print">
                 <button id="copyTimestampBtn" type="button" class="btn btn-secondary">Kopieer tijdstempels</button>
                 <span id="timestampStatus" class="timestamp-status" aria-live="polite"></span>
+                <span id="segmentTrackerStatus" class="timestamp-status" aria-live="polite">Klaar om te starten</span>
+                <span id="segmentCountdown" class="timestamp-status">Nog --:--</span>
               </div>
             </div>
           </article>
@@ -1199,12 +1197,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
     <script>
-      // Centrale configuratie voor de hele opdracht.
       const APP_CONFIG = {
         storageKey: "mijn_schermen_en_ik_video_prevragen_state_v1",
+        videoId: "8uq4N7KeY3g",
         watchUrl: "https://youtu.be/8uq4N7KeY3g",
-        embedUrl: "https://www.youtube.com/embed/8uq4N7KeY3g"
+        embedUrl: "https://www.youtube.com/embed/8uq4N7KeY3g",
+        segmentTrackerPollMs: 250,
+        pauseAtSegmentEnd: true
       };
 
       const PRE_QUESTIONS = [
@@ -1457,7 +1458,6 @@
         }
       ];
 
-      // Staat van de applicatie, inclusief autosave.
       const defaultState = {
         started: false,
         videoActivated: false,
@@ -1520,6 +1520,8 @@
         segmentQuestionTitle: document.getElementById("segmentQuestionTitle"),
         copyTimestampBtn: document.getElementById("copyTimestampBtn"),
         timestampStatus: document.getElementById("timestampStatus"),
+        segmentTrackerStatus: document.getElementById("segmentTrackerStatus"),
+        segmentCountdown: document.getElementById("segmentCountdown"),
         closingUnlockNote: document.getElementById("closingUnlockNote"),
         openExportModalBtn: document.getElementById("openExportModalBtn"),
         exportModal: document.getElementById("exportModal"),
@@ -1529,6 +1531,14 @@
         savePngBtn: document.getElementById("savePngBtn"),
         savePdfBtn: document.getElementById("savePdfBtn"),
         exportModalStatus: document.getElementById("exportModalStatus")
+      };
+
+      const ytTracker = {
+        player: null,
+        apiReady: false,
+        pollId: null,
+        chimeDoneForSegmentId: null,
+        audioContext: null
       };
 
       const requiredPreKeys = flattenRequiredKeys(PRE_QUESTIONS);
@@ -1546,6 +1556,7 @@
         renderSummary();
         updateSummaryStudentMeta();
         bindStaticEvents();
+        initYouTubeTracker();
         syncVisibility();
         updateButtons();
         updateProgress();
@@ -1583,6 +1594,209 @@
       function updateStorageStatus(message) {
         const time = new Date().toLocaleTimeString("nl-BE", { hour: "2-digit", minute: "2-digit" });
         refs.storageStatus.textContent = `${message} ${time}`;
+      }
+
+      function loadYouTubeIframeAPI() {
+        return new Promise((resolve) => {
+          if (window.YT && window.YT.Player) {
+            resolve(window.YT);
+            return;
+          }
+
+          const existingScript = document.querySelector('script[data-youtube-api="true"]');
+          if (!existingScript) {
+            const script = document.createElement("script");
+            script.src = "https://www.youtube.com/iframe_api";
+            script.dataset.youtubeApi = "true";
+            document.head.appendChild(script);
+          }
+
+          const previousReady = window.onYouTubeIframeAPIReady;
+          window.onYouTubeIframeAPIReady = function () {
+            if (typeof previousReady === "function") previousReady();
+            resolve(window.YT);
+          };
+        });
+      }
+
+      function initYouTubeTracker() {
+        if (isLocalFileMode) {
+          refs.segmentTrackerStatus.textContent = "Lokale file-modus";
+          refs.segmentCountdown.textContent = "Nog --:--";
+          return;
+        }
+
+        document.addEventListener("pointerdown", unlockChimeAudio, { passive: true });
+        document.addEventListener("keydown", unlockChimeAudio);
+
+        refs.segmentTrackerStatus.textContent = "Speler laden...";
+
+        loadYouTubeIframeAPI().then(() => {
+          const activeSegment = getActiveSegment();
+          ytTracker.player = new window.YT.Player("lessonVideo", {
+            width: "100%",
+            height: "100%",
+            videoId: APP_CONFIG.videoId,
+            playerVars: {
+              rel: 0,
+              playsinline: 1,
+              modestbranding: 1,
+              start: timestampToSeconds(activeSegment.start)
+            },
+            events: {
+              onReady: onYouTubePlayerReady,
+              onStateChange: onYouTubePlayerStateChange
+            }
+          });
+        }).catch(() => {
+          refs.segmentTrackerStatus.textContent = "Speler kon niet laden";
+        });
+      }
+
+      function onYouTubePlayerReady() {
+        ytTracker.apiReady = true;
+        const segment = getActiveSegment();
+        cueSegment(segment);
+        resetSegmentTrackerUi(segment);
+      }
+
+      function onYouTubePlayerStateChange(event) {
+        if (!window.YT || !window.YT.PlayerState) return;
+
+        switch (event.data) {
+          case window.YT.PlayerState.PLAYING:
+            refs.segmentTrackerStatus.textContent = "Segment loopt";
+            startSegmentPolling();
+            break;
+
+          case window.YT.PlayerState.PAUSED:
+            refs.segmentTrackerStatus.textContent = "Gepauzeerd";
+            stopSegmentPolling();
+            break;
+
+          case window.YT.PlayerState.ENDED:
+            refs.segmentTrackerStatus.textContent = "Video afgelopen";
+            stopSegmentPolling();
+            refs.segmentCountdown.textContent = "Nog 0:00";
+            break;
+
+          case window.YT.PlayerState.BUFFERING:
+            refs.segmentTrackerStatus.textContent = "Laden...";
+            break;
+
+          case window.YT.PlayerState.CUED:
+            refs.segmentTrackerStatus.textContent = "Klaar om te starten";
+            stopSegmentPolling();
+            break;
+
+          default:
+            break;
+        }
+      }
+
+      function startSegmentPolling() {
+        stopSegmentPolling();
+        ytTracker.pollId = window.setInterval(checkSegmentProgress, APP_CONFIG.segmentTrackerPollMs);
+      }
+
+      function stopSegmentPolling() {
+        if (ytTracker.pollId) {
+          clearInterval(ytTracker.pollId);
+          ytTracker.pollId = null;
+        }
+      }
+
+      function checkSegmentProgress() {
+        if (!ytTracker.player || typeof ytTracker.player.getCurrentTime !== "function") return;
+
+        const segment = getActiveSegment();
+        const endSeconds = timestampToSeconds(segment.end);
+        const currentTime = ytTracker.player.getCurrentTime();
+        const remaining = Math.max(0, Math.ceil(endSeconds - currentTime));
+
+        refs.segmentCountdown.textContent = `Nog ${formatSeconds(remaining)}`;
+
+        if (currentTime >= endSeconds && ytTracker.chimeDoneForSegmentId !== segment.id) {
+          ytTracker.chimeDoneForSegmentId = segment.id;
+          refs.segmentTrackerStatus.textContent = "Einde van dit segment bereikt";
+          refs.segmentCountdown.textContent = "Nog 0:00";
+          playSegmentChime();
+
+          if (APP_CONFIG.pauseAtSegmentEnd && typeof ytTracker.player.pauseVideo === "function") {
+            ytTracker.player.pauseVideo();
+          }
+        }
+      }
+
+      function cueSegment(segment) {
+        if (!ytTracker.player || typeof ytTracker.player.cueVideoById !== "function") return;
+
+        const startSeconds = timestampToSeconds(segment.start);
+
+        ytTracker.player.cueVideoById({
+          videoId: APP_CONFIG.videoId,
+          startSeconds
+        });
+      }
+
+      function resetSegmentTrackerUi(segment) {
+        stopSegmentPolling();
+        ytTracker.chimeDoneForSegmentId = null;
+        refs.segmentTrackerStatus.textContent = "Klaar om te starten";
+        refs.segmentCountdown.textContent = `Nog ${formatSeconds(segmentDurationSeconds(segment))}`;
+      }
+
+      function segmentDurationSeconds(segment) {
+        return Math.max(0, timestampToSeconds(segment.end) - timestampToSeconds(segment.start));
+      }
+
+      function formatSeconds(totalSeconds) {
+        const safe = Math.max(0, Math.floor(totalSeconds));
+        const minutes = Math.floor(safe / 60);
+        const seconds = safe % 60;
+        return `${minutes}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function unlockChimeAudio() {
+        try {
+          if (!ytTracker.audioContext) {
+            ytTracker.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (ytTracker.audioContext.state === "suspended") {
+            ytTracker.audioContext.resume();
+          }
+        } catch (error) {
+          // stil falen
+        }
+      }
+
+      function playSegmentChime() {
+        try {
+          unlockChimeAudio();
+          if (!ytTracker.audioContext) return;
+
+          const ctx = ytTracker.audioContext;
+          const now = ctx.currentTime;
+
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.setValueAtTime(1174, now + 0.12);
+
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.05, now + 0.01);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.28);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } catch (error) {
+          // stil falen
+        }
       }
 
       function bindStaticEvents() {
@@ -1774,6 +1988,7 @@
       function resetAll() {
         const confirmed = window.confirm("Wil je echt alle antwoorden resetten?");
         if (!confirmed) return;
+        stopSegmentPolling();
         state = { ...defaultState, answers: {} };
         saveState("Reset uitgevoerd om");
         renderPreForm();
@@ -1987,7 +2202,6 @@
         refs.activeSegmentTime.textContent = `Tijd: ${segment.start} - ${segment.end}`;
         refs.segmentQuestionTitle.textContent = `Vragen bij ${segment.title}`;
 
-        // Video start op het begin van het actieve segment.
         updateVideoSource(segment);
 
         refs.segmentForm.innerHTML = "";
@@ -2004,11 +2218,12 @@
 
       function updateVideoSource(segment) {
         const startSeconds = timestampToSeconds(segment.start);
-        const embedSrc = `${APP_CONFIG.embedUrl}?start=${startSeconds}&rel=0`;
         const watchSrc = `${APP_CONFIG.watchUrl}?t=${startSeconds}`;
 
         refs.openSegmentVideoLink.href = watchSrc;
         refs.openSegmentVideoLink.textContent = `Open video vanaf ${segment.start}`;
+
+        resetSegmentTrackerUi(segment);
 
         if (isLocalFileMode) {
           refs.videoEmbedContainer.classList.add("hidden");
@@ -2018,7 +2233,10 @@
 
         refs.fileModeVideoFallback.classList.add("hidden");
         refs.videoEmbedContainer.classList.remove("hidden");
-        refs.lessonVideo.src = embedSrc;
+
+        if (ytTracker.apiReady && ytTracker.player) {
+          cueSegment(segment);
+        }
       }
 
       function timestampToSeconds(timestamp) {
@@ -2373,6 +2591,7 @@
         refs.exportModalStatus.textContent = "PDF opgeslagen.";
       }
     </script>
+
     <script>
       (function () {
         const btn = document.getElementById("globalMenuBtn");
